@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local environments and secrets
+.env
+.venv/
+venv/
+
+# Generated databases and data
+*.db
+*.sqlite
+*.sqlite3
+data/raw/
+data/processed/
+
+# Reproducible model artifacts
+models/
