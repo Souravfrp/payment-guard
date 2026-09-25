@@ -15,7 +15,7 @@ A useful fraud-risk system must balance competing consequences: financial loss f
 Before starting data cleaning or modelling, I treated the raw dataset as a sequence of verifiable states. I first reproduced and verified the download, then validated all 1.09 million transactions in memory-controlled chunks. This stage did not produce a cleaned or model-ready dataset. It produced a validated raw-data profile and identified the restrictions that must guide the next stage.
 
 ```mermaid
-flowchart LR
+flowchart TB
     A["Stage 1<br/>Published AMLNet source"]
     B["Stage 2<br/>Verified local raw CSV<br/>729 MiB"]
     C["Stage 3<br/>Validated raw-data profile<br/>1,090,000 rows"]
