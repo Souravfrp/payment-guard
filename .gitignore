@@ -22,7 +22,10 @@ venv/
 *.db
 *.sqlite
 *.sqlite3
-data/raw/
+data/raw/*
+!data/raw/amlnet_v2/
+data/raw/amlnet_v2/*
+!data/raw/amlnet_v2/README.md
 data/processed/
 
 # Reproducible model artifacts
