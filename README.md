@@ -1,5 +1,7 @@
 # PaymentGuard
 
+> **Independent project notice:** PaymentGuard is an independent portfolio research project and is not affiliated with any commercial product using a similar name.
+
 PaymentGuard is a one-month data and risk analytics project studying decision-making under digital-payment fraud risk.
 
 ## Research question
