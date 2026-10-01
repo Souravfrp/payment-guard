@@ -30,6 +30,29 @@ flowchart TB
 
 The first transition is implemented in [`download_amlnet_v2_data.py`](src/payment_guard/download_amlnet_v2_data.py). The second and third transitions are supported by [`validate_amlnet_v2_data.py`](src/payment_guard/validate_amlnet_v2_data.py). Dataset provenance, licence information and checksum values are recorded in the [AMLNet Version 2.0 raw-data documentation](data/raw/amlnet_v2/README.md).
 
+## Completed Schema, Leakage and Temporal Risk Audit
+
+Before preparing model-ready data, I audited the 17 top-level columns and 47 paths found inside the nested metadata. The audit showed that file order is not chronological and that several metadata groups directly reveal the supplied fraud label. I excluded those target-revealing fields rather than allowing a model to learn information that would not be available in a real transaction decision.
+
+I then profiled the unresolved device, location and merchant fields and measured how fraud rates changed across the seven observed months. This evidence was combined into an initial feature policy:
+
+| Resolved policy | Fields | How I will use them |
+|---|---:|---|
+| Include | 7 | Direct baseline features |
+| Include with assumption | 4 | Use only with documented decision-time availability |
+| Include with ablation | 2 | Compare results with and without these fields |
+| Derive with history | 4 | Calculate only from earlier transactions |
+| Exclude initially | 1 | Leave out of the first baseline |
+| Split only | 1 | Use for chronological ordering |
+| Target | 1 | Use only as the prediction outcome |
+| Exclude | 44 | Do not use as initial predictors |
+
+The figure below shows the temporal evidence used in this decision. October 2025 and April 2026 are partial months, and the rare deterministic groups are displayed separately from the larger mixed-risk groups.
+
+![AMLNet Version 2.0 temporal fraud-risk profile](results/figures/amlnet_v2_temporal_risk_profile.png)
+
+The detailed reasoning is recorded in the [data workspace](docs/data_workspace.md). Reproducible evidence is available in the [leakage audit](results/tables/amlnet_v2_leakage_audit.csv), [candidate metadata profile](results/tables/amlnet_v2_candidate_metadata_profile.csv), [temporal risk profile](results/tables/amlnet_v2_temporal_risk_profile.csv), and [initial model feature policy](results/tables/amlnet_v2_initial_model_feature_policy.csv).
+
 ## Initial scope
 
 - Design and query a relational transaction database using SQL.

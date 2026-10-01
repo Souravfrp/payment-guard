@@ -1,0 +1,57 @@
+month,period_status,field,value,transaction_rows,fraud_rows,fraud_rate_pct
+2025-10,partial,overall,All transactions,120879,226,0.1869638233274597
+2025-10,partial,type,PAYMENT,12,12,100.0
+2025-10,partial,type,TRANSFER,30357,214,0.7049444938564416
+2025-10,partial,category,Property Investment,4,4,100.0
+2025-10,partial,category,Cryptocurrency,0,0,
+2025-10,partial,category,Shell Company,138,19,13.768115942028986
+2025-10,partial,category,Other,26407,176,0.666489945847692
+2025-10,partial,category,Recreation,15816,27,0.17071320182094082
+2025-11,complete,overall,All transactions,171789,226,0.1315567352973706
+2025-11,complete,type,PAYMENT,13,13,100.0
+2025-11,complete,type,TRANSFER,43045,213,0.49483099082355675
+2025-11,complete,category,Property Investment,4,4,100.0
+2025-11,complete,category,Cryptocurrency,0,0,
+2025-11,complete,category,Shell Company,183,18,9.836065573770492
+2025-11,complete,category,Other,37817,200,0.528862680804929
+2025-11,complete,category,Recreation,22359,4,0.017889887740954426
+2025-12,complete,overall,All transactions,190055,198,0.10418036884059878
+2025-12,complete,type,PAYMENT,9,9,100.0
+2025-12,complete,type,TRANSFER,47253,189,0.39997460478699765
+2025-12,complete,category,Property Investment,4,4,100.0
+2025-12,complete,category,Cryptocurrency,0,0,
+2025-12,complete,category,Shell Company,217,14,6.451612903225806
+2025-12,complete,category,Other,41857,170,0.4061447308693886
+2025-12,complete,category,Recreation,24888,10,0.04018000642880103
+2026-01,complete,overall,All transactions,186097,281,0.15099652331848445
+2026-01,complete,type,PAYMENT,8,8,100.0
+2026-01,complete,type,TRANSFER,46667,273,0.5849958214584181
+2026-01,complete,category,Property Investment,1,1,100.0
+2026-01,complete,category,Cryptocurrency,1,1,100.0
+2026-01,complete,category,Shell Company,201,16,7.960199004975125
+2026-01,complete,category,Other,40970,255,0.6224066390041494
+2026-01,complete,category,Recreation,24232,8,0.03301419610432486
+2026-02,complete,overall,All transactions,167990,202,0.12024525269361272
+2026-02,complete,type,PAYMENT,4,4,100.0
+2026-02,complete,type,TRANSFER,42228,198,0.46888320545609546
+2026-02,complete,category,Property Investment,0,0,
+2026-02,complete,category,Cryptocurrency,0,0,
+2026-02,complete,category,Shell Company,166,12,7.228915662650603
+2026-02,complete,category,Other,37149,174,0.468384074941452
+2026-02,complete,category,Recreation,21863,16,0.07318300324749577
+2026-03,complete,overall,All transactions,186045,224,0.12040097825794835
+2026-03,complete,type,PAYMENT,9,9,100.0
+2026-03,complete,type,TRANSFER,46923,215,0.45819747245487286
+2026-03,complete,category,Property Investment,2,2,100.0
+2026-03,complete,category,Cryptocurrency,1,1,100.0
+2026-03,complete,category,Shell Company,204,33,16.176470588235293
+2026-03,complete,category,Other,40986,159,0.38793734445908357
+2026-03,complete,category,Recreation,24246,29,0.11960735791470758
+2026-04,partial,overall,All transactions,67145,54,0.08042296522451411
+2026-04,partial,type,PAYMENT,3,3,100.0
+2026-04,partial,type,TRANSFER,16910,51,0.3015966883500887
+2026-04,partial,category,Property Investment,1,1,100.0
+2026-04,partial,category,Cryptocurrency,0,0,
+2026-04,partial,category,Shell Company,64,5,7.8125
+2026-04,partial,category,Other,14545,48,0.3300103128222757
+2026-04,partial,category,Recreation,8561,0,0.0
