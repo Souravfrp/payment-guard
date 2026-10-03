@@ -40,9 +40,19 @@ conda run --name payment-guard-verify python -c "import pandas, numpy, pyarrow, 
 conda run --name payment-guard-verify env PYTHONPATH=src python -m pytest -q
 ```
 
-Expected test result for this change: 38 passed. Record actual output before
-marking fresh-environment verification complete. No Conda executable was
-available in the review environment, so this remains pending.
+On 3 October 2026, Sourav supplied terminal output confirming successful
+creation of payment-guard-verify from environment.yml using the defaults
+channel on osx-arm64, followed by:
+
+```text
+38 passed in 81.08s (0:01:21)
+```
+
+Fresh Conda creation and the preparation/publication suite are therefore
+verified on the Mac, based on the supplied terminal output. The optional
+standalone core-import command above was not shown in that output and is not
+claimed as separately verified. This test timing is not a full-data preparation
+benchmark.
 
 The existing prepared data need not be regenerated for these tests.
 
