@@ -1,7 +1,7 @@
 # PaymentGuard
 
 > **Independent project notice:** PaymentGuard is an independent portfolio research project and is not affiliated with any commercial product using a similar name.
-payment-fraud risk study in progress. Raw transaction data verified and profiled; modelling and the approve, review, block policy are still planned.
+Payment-fraud risk study in progress. Raw data audited; the prepared transaction table and chronological splits are verified. Modelling and the approve, review, block policy are still planned.
 
 ## Research question
 
@@ -51,6 +51,36 @@ The figure below shows the temporal evidence used in this decision. October 2025
 ![AMLNet Version 2.0 temporal fraud-risk profile](results/figures/amlnet_v2_temporal_risk_profile.png)
 
 The detailed reasoning is recorded in the [data workspace](docs/data_workspace.md). Reproducible evidence is available in the [leakage audit](results/tables/amlnet_v2_leakage_audit.csv), [candidate metadata profile](results/tables/amlnet_v2_candidate_metadata_profile.csv), [temporal risk profile](results/tables/amlnet_v2_temporal_risk_profile.csv), and [initial model feature policy](results/tables/amlnet_v2_initial_model_feature_policy.csv).
+
+## Completed Transaction Preparation
+
+I prepared all 1,090,000 transactions using 13 candidate predictors
+from my audited feature policy. I validated required values, preserved
+source-row references, sorted by timestamp and assigned fixed
+chronological training, validation and test periods.
+
+I reconciled 1,411 positive labels and independently verified the
+saved Parquet table. The preparation tests passed all 32 cases.
+The full run took 61.01 seconds on my Mac, with 925.14 MiB peak
+process memory.
+
+My [data-handling account](docs/data_preparation.md) explains the
+sequence, the findings that required intermediate checks, mathematical
+conditions, computational costs and remaining limitations.
+The [split summary](results/tables/amlnet_v2_split_summary.csv)
+records aggregate evidence.
+
+The test period is a chronological holdout after exploratory auditing.
+The data remain synthetic; this stage does not establish production
+fraud-detection performance.
+
+### Chronological split visualization
+
+![Chronological splits and positive-label rates](results/figures/amlnet_v2_chronological_splits.png)
+
+I use the upper panel to show the observed split periods and the lower panel to compare empirical positive-label rates. These describe synthetic data; they do not establish statistical significance or model performance.
+
+I reproduce the figure from the aggregate split summary using `PYTHONPATH=src python -m payment_guard.plot_amlnet_v2_splits`.
 
 ## Initial scope
 

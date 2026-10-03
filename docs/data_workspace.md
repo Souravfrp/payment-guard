@@ -65,3 +65,19 @@ AMLNet Version 2.0 is fully synthetic. I do not present its customers, accounts,
 I still treat account names, merchant IDs, IP addresses and location fields as identifiers when designing features and publishing outputs. The raw CSV remains outside Git, and published tables and figures contain aggregated evidence rather than individual transaction records.
 
 The dataset is published under the Creative Commons Attribution-NonCommercial 4.0 International licence. PaymentGuard uses it as an independent educational and non-commercial portfolio project, with the source and licence recorded in the repository.
+
+## Preparation Follow-up
+
+I have now implemented the preparation rules described above.
+The verified table contains 13 candidate predictors, the supplied
+outcome, timestamp, source-row reference and split assignment.
+
+The initial table does not retain identifiers reserved for later
+historical features. Those require a separate extraction from the
+raw source.
+
+My [data-preparation account](data_preparation.md) records the
+step-by-step reasoning, results, mathematical checks, resource
+measurements and limitations. The earlier audit findings remain
+applicable; preparation does not resolve the synthetic-data or
+decision-time availability assumptions.

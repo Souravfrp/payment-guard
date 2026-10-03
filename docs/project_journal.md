@@ -27,3 +27,22 @@ I then profiled the unresolved device, location and merchant fields. Device oper
 I also measured fraud rates across the seven observed months. The overall rate changed during the period, while some rare transaction types and categories showed deterministic or unstable behaviour. I kept the top-level `type` and `category` fields as decision-time candidates, but I will compare models with and without them so that I can measure how much performance depends on the synthetic data structure.
 
 Finally, I combined the audit, candidate-field profile and temporal evidence into an initial model feature policy. The policy records which fields can be included, which require an assumption or ablation test, which may only be used to derive historical features, and which must be excluded. This stage defines the rules for the first baseline; it does not yet claim that the data are cleaned or model-ready.
+
+### Transaction Preparation and Chronological Splits
+
+I turned the audited feature policy into a preparation pipeline.
+Before the full run, I measured a small sample to assess memory,
+checked metadata extraction against the earlier timestamp audit,
+and added tests for invalid inputs and chronological boundaries.
+
+The full run reconciled all 1,090,000 transactions and 1,411 positive
+labels. I then reloaded the saved output and checked source references,
+columns, labels and split assignments independently.
+
+I recorded why each step was needed, including the additional
+investigations prompted by leakage, unresolved metadata and
+nonchronological file order, in my
+[data-preparation account](data_preparation.md).
+
+This completes preparation for the first baseline, not modelling
+or evaluation of transaction decisions.
