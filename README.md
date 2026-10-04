@@ -100,3 +100,11 @@ I reproduce the figure from the aggregate split summary using `PYTHONPATH=src py
 - Synthetic data must always be identified as synthetic.
 - Results must not be invented, exaggerated, or reported without validation.
 - Assumptions, limitations, and negative findings must be documented.
+
+
+## SQLite validation
+
+The prepared transactions were imported into SQLite and checked using the
+four saved queries in `sql/`. The [SQL validation account](docs/sql_validation.md)
+records the observed totals, explains the reusable converter, and distinguishes
+manual summary checks from the pending full-dataset value-by-value comparison.

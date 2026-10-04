@@ -46,3 +46,18 @@ nonchronological file order, in my
 
 This completes preparation for the first baseline, not modelling
 or evaluation of transaction decisions.
+
+
+### SQLite Import and SQL Validation
+
+I imported the prepared data into SQLite and practised SELECT, WHERE,
+COUNT, SUM, DISTINCT, GROUP BY and timestamp summaries in DB Browser.
+The import totals matched 1,090,000 transactions and 1,411 positive labels.
+I saved four SQL checks for totals, splits, source references, labels,
+amounts and missing timestamps, and committed them to the recovery branch.
+
+I then added a reusable converter with exclusive publication and read-only
+comparison against the prepared Parquet file. The automated tests use small
+fixtures; full-dataset verification with this new command on my Mac remains
+pending. The [SQL validation account](sql_validation.md) records the scope
+of the completed checks and the next command. No model has been trained yet.
