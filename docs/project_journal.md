@@ -58,6 +58,8 @@ amounts and missing timestamps, and committed them to the recovery branch.
 
 I then added a reusable converter with exclusive publication and read-only
 comparison against the prepared Parquet file. The automated tests use small
-fixtures; full-dataset verification with this new command on my Mac remains
-pending. The [SQL validation account](sql_validation.md) records the scope
-of the completed checks and the next command. No model has been trained yet.
+fixtures. On 5 October 2026 (Asia/Kolkata), I ran the read-only verification
+at commit `1fb4602` in `payment-guard-verify` on my Mac. It confirmed every
+imported value against the prepared data, with 1,090,000 transactions and
+1,411 positive labels. The [SQL validation account](sql_validation.md) records
+the evidence and scope. No model has been trained yet.

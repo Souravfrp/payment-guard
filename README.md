@@ -107,4 +107,5 @@ I reproduce the figure from the aggregate split summary using `PYTHONPATH=src py
 The prepared transactions were imported into SQLite and checked using the
 four saved queries in `sql/`. The [SQL validation account](docs/sql_validation.md)
 records the observed totals, explains the reusable converter, and distinguishes
-manual summary checks from the pending full-dataset value-by-value comparison.
+manual summary checks from the completed full-dataset value-by-value comparison
+on the Mac.

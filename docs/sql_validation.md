@@ -70,8 +70,26 @@ Keep the database closed in DB Browser during conversion or verification.
 
 The Parquet file and sorted comparison frame are loaded into memory; SQLite
 writes and reads are chunked. The new converter has automated small-fixture
-tests. Full-dataset, value-by-value verification on the Mac is still pending;
-the earlier manual totals must not be presented as that new verification.
+tests.
+
+### Completed full-dataset comparison
+
+On 5 October 2026 (Asia/Kolkata), Sourav supplied terminal output from the
+`payment-guard-verify` environment after pulling commit `1fb4602` and running
+`--verify-only`. It reported:
+
+```text
+Verified transactions: 1,090,000
+Verified positive labels: 1,411
+Verified every imported value against prepared data.
+Database: /Users/souravroy/Documents/payment-guard/data/processed/payment_guard_data.sqlite
+```
+
+This completed the full-dataset comparison of the existing SQLite table with
+the prepared Parquet file without rebuilding the database. It is separate
+from the earlier manual SQL summaries. It does not demonstrate a full-dataset
+run of the new database-building path or a Mac run of the expanded 47-test
+suite, and it does not validate the realism of the synthetic labels.
 
 ## Interpretation and next work
 
