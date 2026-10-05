@@ -142,3 +142,12 @@ No outcome is assumed. If log amount or additional features fail to improve
 the baseline, I will record that result. Claims about actual fraud losses,
 calibration, production use or an approve/review/block policy remain outside
 this first experiment.
+
+
+## Implementation checkpoint
+
+The first two full-feature fits and both reference scores are implemented in
+`src/payment_guard/train_logistic_baseline.py`. The [run instructions](running_logistic_baseline.md)
+record the solver settings, local artifacts and small-fixture test evidence.
+The first full-data run is pending. The six feature-removal fits are planned
+for the next implementation step after inspecting the initial run.
