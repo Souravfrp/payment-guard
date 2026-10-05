@@ -56,3 +56,24 @@ benchmark.
 
 The existing prepared data need not be regenerated for these tests.
 
+
+## Expanded suite on the Mac — 5 October 2026
+
+After pulling commit `e510a6b`, I ran the expanded suite in my existing
+`payment-guard-verify` environment:
+
+```bash
+PYTHONPATH=src python -m pytest -q
+```
+
+The terminal reported:
+
+```text
+47 passed in 1.13s
+```
+
+This covered preparation, publication recovery, SQLite conversion and
+verification tests, including execution of the saved SQL on small fixtures.
+The timing is a test-suite duration, not a full-dataset processing benchmark.
+I did not recreate the Conda environment or rebuild the full database in
+this run. The full-dataset read-only comparison was verified separately.

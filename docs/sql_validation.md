@@ -88,8 +88,9 @@ Database: /Users/souravroy/Documents/payment-guard/data/processed/payment_guard_
 This completed the full-dataset comparison of the existing SQLite table with
 the prepared Parquet file without rebuilding the database. It is separate
 from the earlier manual SQL summaries. It does not demonstrate a full-dataset
-run of the new database-building path or a Mac run of the expanded 47-test
-suite, and it does not validate the realism of the synthetic labels.
+run of the new database-building path, and it does not validate the realism
+of the synthetic labels. The expanded Mac test suite was run separately,
+as recorded below.
 
 ## Interpretation and next work
 
@@ -99,3 +100,24 @@ is training-period exploration and a simple baseline, followed by validation
 of precision, recall and decision thresholds. Fit preprocessing only on
 training data. The test period is a chronological holdout after exploratory
 auditing, not an entirely unseen dataset.
+
+## Expanded suite on the Mac — 5 October 2026
+
+After pulling commit `e510a6b`, I ran the expanded suite in my existing
+`payment-guard-verify` environment:
+
+```bash
+PYTHONPATH=src python -m pytest -q
+```
+
+The terminal reported:
+
+```text
+47 passed in 1.13s
+```
+
+This covered preparation, publication recovery, SQLite conversion and
+verification tests, including execution of the saved SQL on small fixtures.
+The timing is a test-suite duration, not a full-dataset processing benchmark.
+I did not recreate the Conda environment or rebuild the full database in
+this run. The full-dataset read-only comparison was verified separately.
