@@ -109,3 +109,10 @@ four saved queries in `sql/`. The [SQL validation account](docs/sql_validation.m
 records the observed totals, explains the reusable converter, and distinguishes
 manual summary checks from the completed full-dataset value-by-value comparison
 on the Mac.
+
+## First training-data SQL exploration
+
+I compared amount ranges, transaction types and amount ranges within transfers.
+My [exploration notes](docs/training_sql_exploration.md) record the results,
+explain the conditional proportions and precision–recall calculations, and
+set out what I still need to check when building a model.
