@@ -60,6 +60,32 @@ amount pattern was not explained entirely by mixing transaction types.
 It does not show that increasing an amount causes fraud, or that amount
 will remain equally useful in a later period.
 
+## Checking the training months
+
+I also grouped the training transactions by month using
+`SUBSTR(timestamp, 1, 7)`. I wanted to check whether the overall training
+fraud rate hid differences between months.
+
+| Month | Transactions | Fraud labels | Fraud percentage |
+| --- | ---: | ---: | ---: |
+| October 2025 (partial month) | 120,879 | 226 | 0.187% |
+| November 2025 | 171,789 | 226 | 0.132% |
+| December 2025 | 190,055 | 198 | 0.104% |
+| January 2026 | 186,097 | 281 | 0.151% |
+
+The observed rate fell through December and rose in January. October and
+November each had 226 fraud labels, but November had more transactions,
+so its rate was lower. This was another example of why the denominator
+matters. October covers only part of a month, so I cannot compare its
+transaction count with a full month as though the observation periods
+were equal.
+
+The four rows add up to 668,820 transactions and 931 fraud labels, matching
+the training totals. These results support evaluating performance over
+time. They do not establish a statistically significant change, identify
+its cause, or prove that a model will deteriorate. I have not fitted a
+model or performed a significance test for these monthly differences.
+
 ## The probability calculation behind the SQL
 
 Let $Y_i=1$ denote a fraud label and $Y_i=0$ a non-fraud label.
@@ -123,7 +149,7 @@ one to that band's count, and add its binary label to that band's fraud
 count. For the transfer query I also check its type.
 
 For $N$ input rows and $K$ groups, this counting algorithm takes
-(O$N$) time and (O$K$) space for its counters. For the four fixed
+$O(N)$ time and $O(K)$ space for its counters. For the four fixed
 amount bands, $K=4$. This explains why I can compute these summaries
 without retaining all matching transactions in memory.
 
@@ -147,7 +173,7 @@ Calibration, expected costs and constrained decisions belong to that next
 stage, once there are model scores to examine.
 
 The test period remains a chronological holdout after earlier exploratory
-auditing; it is not an entirely unseen dataset. These three SQL queries
+auditing; it is not an entirely unseen dataset. These four SQL queries
 did not use validation or test rows.
 
 ## Evidence and reproduction
@@ -161,8 +187,9 @@ The saved queries are:
 - [Amount bands](../sql/explore_train_amount_bands.sql)
 - [Transaction types](../sql/explore_train_transaction_types.sql)
 - [Amount bands within transfers](../sql/explore_train_transfer_amount_bands.sql)
+- [Monthly training fraud](../sql/explore_train_monthly_fraud.sql)
 
 The initial average-amount query was run interactively; it is not one of
-these three saved queries. The [SQLite validation account](sql_validation.md)
+these four saved queries. The [SQLite validation account](sql_validation.md)
 records the separate full comparison against the prepared Parquet file.
 No model was trained during this SQL exploration.
