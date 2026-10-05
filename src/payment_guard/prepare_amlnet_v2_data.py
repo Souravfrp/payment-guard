@@ -313,13 +313,31 @@ def sort_and_split(prepared):
     return ordered
 
 
+def publish_output_pair(temporary_table, table_path, temporary_report, report_path):
+    """Publish without overwriting; roll back the table on report failure.
+
+    Staged files must be on the destination filesystem. Hard links provide
+    exclusive creation, unlike replace(), which can overwrite another run.
+    This handles raised errors, not process termination or power loss.
+    Readers must require both files before treating a run as complete.
+    """
+    import os
+
+    os.link(temporary_table, table_path)
+    try:
+        os.link(temporary_report, report_path)
+    except BaseException:
+        table_path.unlink()
+        raise
+
+
 def main():
     """Build the full prepared table and record verification evidence."""
     import hashlib
     import json
-    import os
     import resource
     import sys
+    from tempfile import TemporaryDirectory
     from time import perf_counter
     from pathlib import Path
 
@@ -443,12 +461,11 @@ def main():
         }
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    temporary_table = table_path.with_suffix(".parquet.tmp")
-    temporary_report = report_path.with_suffix(".json.tmp")
-
     writing_started = perf_counter()
 
-    try:
+    with TemporaryDirectory(prefix=".amlnet-preparation-", dir=output_dir) as staging:
+        temporary_table = Path(staging) / table_path.name
+        temporary_report = Path(staging) / report_path.name
         prepared.to_parquet(
             temporary_table,
             engine="pyarrow",
@@ -489,12 +506,9 @@ def main():
             encoding="utf-8",
         )
 
-        os.replace(temporary_table, table_path)
-        os.replace(temporary_report, report_path)
-
-    finally:
-        temporary_table.unlink(missing_ok=True)
-        temporary_report.unlink(missing_ok=True)
+        publish_output_pair(
+            temporary_table, table_path, temporary_report, report_path
+        )
 
     print(summary.loc[periods].to_string())
     print(f"Rows in repeated prepared groups: {repeated_rows:,}")

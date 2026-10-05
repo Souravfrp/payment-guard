@@ -46,3 +46,39 @@ nonchronological file order, in my
 
 This completes preparation for the first baseline, not modelling
 or evaluation of transaction decisions.
+
+
+### SQLite Import and SQL Validation
+
+I imported the prepared data into SQLite and practised SELECT, WHERE,
+COUNT, SUM, DISTINCT, GROUP BY and timestamp summaries in DB Browser.
+The import totals matched 1,090,000 transactions and 1,411 positive labels.
+I saved four SQL checks for totals, splits, source references, labels,
+amounts and missing timestamps, and committed them to the recovery branch.
+
+I then added a reusable converter with exclusive publication and read-only
+comparison against the prepared Parquet file. The automated tests use small
+fixtures. On 5 October 2026 (Asia/Kolkata), I ran the read-only verification
+at commit `1fb4602` in `payment-guard-verify` on my Mac. It confirmed every
+imported value against the prepared data, with 1,090,000 transactions and
+1,411 positive labels. The [SQL validation account](sql_validation.md) records
+the evidence and scope. No model has been trained yet.
+
+### First Training-Data SQL Exploration — 5 October 2026
+
+I used DB Browser to compare transaction amounts and types in the training
+period. I then repeated the amount comparison within transfers to see whether
+the pattern remained within one type. I saved all three grouped queries.
+
+The larger amount bands had higher observed fraud rates, including within
+transfers. But a rule that flagged only large transactions would miss most
+fraud labels. Calculating precision and recall helped me see why these two
+questions have different denominators. I also found that all 42 training
+PAYMENT transactions were fraud-labelled, which supports the planned comparison
+of models with and without type and category.
+
+I recorded the results and their limits in my [training SQL exploration
+notes](training_sql_exploration.md), including how the grouped counts connect
+to empirical conditional proportions and a simple counting algorithm.
+These were training-data observations on synthetic data; no model or
+transaction decision policy was fitted at this stage.
