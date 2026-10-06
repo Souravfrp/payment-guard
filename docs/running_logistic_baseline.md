@@ -5,7 +5,8 @@ full-feature logistic regression with raw amount, and the same model with
 log-transformed amount. The type/category removal comparisons remain pending.
 The first full-data run completed on my Mac on 6 October 2026. My
 [first results](logistic_baseline_first_results.md) record the terminal evidence
-and initial interpretation; inspection of the saved run artifacts is pending.
+and interpretation. I have inspected the printed metrics and manifest excerpts;
+independent checks of artifact hashes and row-level predictions remain pending.
 
 ## What the command does
 
@@ -25,8 +26,8 @@ I record how often this happens.
 The model settings are L2 regularization, C=1.0, an intercept, no class
 weighting, the lbfgs solver, tolerance 1e-6 and a maximum of 2,000 iterations.
 The stricter tolerance is intended to avoid comparing very loosely fitted
-models. Both full-data fits completed without a surfaced convergence error;
-I still need to inspect their recorded iteration counts. The implementation
+models. Both full-data fits reported convergence: 90 iterations for raw amount and
+59 for log amount. The implementation
 uses the library's default L2 penalty to work across the old and new penalty
 interfaces. Installed dependency versions are saved with every completed run.
 
@@ -50,8 +51,9 @@ PYTHONPATH=src python -m payment_guard.train_logistic_baseline
 
 I should leave Terminal running until it prints the validation comparison
 and the completed output path. No GPU or database rebuild is required.
-The first full Mac run completed; its exact training timings and iteration
-counts have not yet been inspected from the saved manifest. The experiment loads training/validation frames and transformed
+The supplied manifest excerpt recorded single-run fit times of 3.11 seconds
+for raw amount and 2.18 seconds for log amount. These are not a speed benchmark.
+The experiment loads training/validation frames and transformed
 matrices into memory; it is not an out-of-core training procedure.
 
 The default output is models/logistic_baseline_v1/, which is excluded from
@@ -101,8 +103,8 @@ The saved pipelines expect the fixed feature construction performed by
 transformation is needed before predicting with a reloaded pipeline; passing
 the original raw columns directly is not the intended interface.
 
-Row-level predictions and model files stay local. Only reviewed aggregate
-results and their interpretation should later be committed. Model outputs
+Row-level predictions and model files stay local. The aggregate count snapshot, comparison figure and results account are
+committed for this checkpoint. Model outputs
 are not proof of calibrated probabilities or production fraud performance.
 
 ## Verification performed before the full run
