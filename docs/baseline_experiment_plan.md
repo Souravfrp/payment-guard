@@ -1,6 +1,8 @@
 # My first logistic-regression experiment
 
-Status: planned. No baseline model has been trained or evaluated.
+Status: the first two full-feature fits completed on 6 October 2026.
+The six feature-removal fits remain pending. The plan below was written
+before the first run; [results are recorded separately](logistic_baseline_first_results.md).
 
 ## What I want to find out
 
@@ -149,5 +151,5 @@ this first experiment.
 The first two full-feature fits and both reference scores are implemented in
 `src/payment_guard/train_logistic_baseline.py`. The [run instructions](running_logistic_baseline.md)
 record the solver settings, local artifacts and small-fixture test evidence.
-The first full-data run is pending. The six feature-removal fits are planned
+The first full-data run completed on the Mac. The six feature-removal fits are planned
 for the next implementation step after inspecting the initial run.

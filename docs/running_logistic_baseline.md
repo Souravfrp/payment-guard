@@ -3,8 +3,9 @@
 I have implemented the first stage of my [experiment plan](baseline_experiment_plan.md):
 full-feature logistic regression with raw amount, and the same model with
 log-transformed amount. The type/category removal comparisons remain pending.
-The implementation has been tested on small fixtures. I have not yet run the
-full AMLNet experiment or obtained its model performance results.
+The first full-data run completed on my Mac on 6 October 2026. My
+[first results](logistic_baseline_first_results.md) record the terminal evidence
+and initial interpretation; inspection of the saved run artifacts is pending.
 
 ## What the command does
 
@@ -24,7 +25,8 @@ I record how often this happens.
 The model settings are L2 regularization, C=1.0, an intercept, no class
 weighting, the lbfgs solver, tolerance 1e-6 and a maximum of 2,000 iterations.
 The stricter tolerance is intended to avoid comparing very loosely fitted
-models; I still need to inspect convergence on the full data. The implementation
+models. Both full-data fits completed without a surfaced convergence error;
+I still need to inspect their recorded iteration counts. The implementation
 uses the library's default L2 penalty to work across the old and new penalty
 interfaces. Installed dependency versions are saved with every completed run.
 
@@ -48,8 +50,8 @@ PYTHONPATH=src python -m payment_guard.train_logistic_baseline
 
 I should leave Terminal running until it prints the validation comparison
 and the completed output path. No GPU or database rebuild is required.
-The actual elapsed time and convergence on the full Mac dataset are not
-known yet. The experiment loads training/validation frames and transformed
+The first full Mac run completed; its exact training timings and iteration
+counts have not yet been inspected from the saved manifest. The experiment loads training/validation frames and transformed
 matrices into memory; it is not an out-of-core training procedure.
 
 The default output is models/logistic_baseline_v1/, which is excluded from
@@ -113,9 +115,10 @@ ties, convergence failure, and a real Parquet/model-file round trip through
 the command entry point using small fixture counts. An existing run is
 preserved when a repeat command tries to use its output path.
 
-The existing full-data checkpoint had 47 tests passing on the Mac. The
-expanded 61-test Mac run and full baseline experiment are still pending.
-Small-fixture predictions are test evidence, not PaymentGuard model results.
+On 6 October 2026, my Mac terminal at commit `28f1de7` reported 61 tests
+passed in 68.18 seconds, followed by successful completion of the full
+baseline command. The [first results](logistic_baseline_first_results.md)
+separate that full-data evidence from the small-fixture tests.
 
 ## Library references
 
