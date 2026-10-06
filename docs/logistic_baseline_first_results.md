@@ -20,9 +20,13 @@ reported the saved run at `models/logistic_baseline_v1`.
 This account initially used the completion output. I then supplied all 12
 rows of validation_metrics.csv through Terminal on 6 October 2026. The
 confusion counts reconcile to 167,990 validation transactions, 202 positives
-and each selected review budget. The run manifest, artifact hashes and
-row-level predictions remain uninspected; exact iteration counts, package
-versions and fit timings are not inferred from the completion message.
+and each selected review budget. I later supplied a manifest excerpt: the raw model reported convergence in
+90 iterations (3.11 seconds fitting), and the log model in 59 iterations
+(2.18 seconds). Both reported zero unknown validation categories, the same
+planned settings, and a clean working tree at `28f1de7`. These are single-run
+fit timings, not a speed benchmark. The recorded packages were NumPy 2.5.3,
+pandas 3.0.6, SciPy 1.18.1, scikit-learn 1.9.1, PyArrow 24.0.0 and joblib 1.6.0.
+Artifact hashes and row-level predictions have not been independently checked.
 
 ## What happened at the planned review budget
 
@@ -122,12 +126,53 @@ All amount-ranking and logistic cutoffs had one observation at the cutoff
 and no tie crossing it. The constant reference tied all 167,990 scores at
 every cutoff; its selected sets depended on the shared seeded tie order.
 
+## Visual comparison
+
+![Validation fraud caught and precision at three review budgets](../results/figures/logistic_baseline_review_tradeoff.svg)
+
+I plotted both fraud caught and precision because either panel alone would
+leave out part of the decision. The log model caught the most fraud at
+each evaluated workload, but expanding its review list also added many
+non-fraud transactions. The figure does not establish an optimal budget.
+
+The horizontal positions are the actual numbers of reviews; the smaller
+percentage labels identify their approximate shares of validation rows.
+Only three budgets were evaluated. Dashed lines connect those observations
+as visual guides, not measurements at intermediate workloads. This is not
+a full precision-recall curve or a calibration plot.
+
+The [aggregate count snapshot](../results/tables/logistic_baseline_review_counts.csv)
+was transcribed from the validation metrics I supplied through Terminal on
+6 October 2026 for the run at `28f1de7`. It contains only the counts needed
+for this figure. Precision is recalculated as caught fraud divided by
+reviews. The plotting script checks all 12 rows against the validation
+totals and requires the same three budgets for every approach. The snapshot
+does not independently verify the local prediction files.
+
+I reproduce the committed SVG from that aggregate snapshot with:
+
+```bash
+PYTHONPATH=src python -m payment_guard.plot_logistic_baseline
+```
+
+To plot directly from my original saved metrics and open a PNG on my Mac:
+
+```bash
+PYTHONPATH=src python -m payment_guard.plot_logistic_baseline --input models/logistic_baseline_v1/validation_metrics.csv --output models/logistic_baseline_v1/review_tradeoff.png
+open models/logistic_baseline_v1/review_tradeoff.png
+```
+
+The plotting command reads existing counts and never retrains a model.
+It replaces the specified figure if one already exists, but does not change
+the input metrics, predictions or fitted model files.
+
 ## What I still need to examine
 
 I have inspected the supplied aggregate metrics at all three budgets.
-Next I will inspect the run manifest for convergence records, input and
-artifact hashes, unknown-category counts, timings and package versions.
-The metrics alone cannot verify that those local artifacts are unchanged.
+I have also inspected the supplied manifest excerpt for convergence,
+unknown categories, timings and package versions. Input and artifact hashes
+remain unchecked; the supplied excerpts cannot establish that all local
+artifacts are unchanged.
 
 Next I will run the planned type/category removal comparisons. The earlier
 SQL exploration showed unusually strong label patterns in those synthetic
@@ -143,3 +188,4 @@ The [experiment plan](baseline_experiment_plan.md) was written before these
 results. The [run instructions](running_logistic_baseline.md) describe the
 implementation and local artifacts. The fitted models and row-level data
 remain outside Git.
+
