@@ -1,0 +1,13 @@
+model,selected,true_positives,false_positives,false_negatives,true_negatives
+constant_train_rate,168,0,168,202,167620
+constant_train_rate,840,2,838,200,166950
+constant_train_rate,1680,4,1676,198,166112
+amount_ranking,168,68,100,134,167688
+amount_ranking,840,99,741,103,167047
+amount_ranking,1680,109,1571,93,166217
+logistic_raw,168,157,11,45,167777
+logistic_raw,840,185,655,17,167133
+logistic_raw,1680,188,1492,14,166296
+logistic_log,168,166,2,36,167786
+logistic_log,840,194,646,8,167142
+logistic_log,1680,196,1484,6,166304

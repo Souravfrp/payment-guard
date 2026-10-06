@@ -95,9 +95,10 @@ as recorded below.
 ## Interpretation and next work
 
 The data are synthetic. Positive labels are rare, and a model that predicts
-no positives could have high accuracy while detecting none. The next stage
-is training-period exploration and a simple baseline, followed by validation
-of precision, recall and decision thresholds. Fit preprocessing only on
+no positives could have high accuracy while detecting none. The [training-period exploration](training_sql_exploration.md) and
+[first baseline comparison](logistic_baseline_first_results.md) are now complete.
+The baselines report precision and recall at fixed review budgets; a live
+decision threshold remains future work. Preprocessing is fitted only on
 training data. The test period is a chronological holdout after exploratory
 auditing, not an entirely unseen dataset.
 

@@ -82,3 +82,29 @@ notes](training_sql_exploration.md), including how the grouped counts connect
 to empirical conditional proportions and a simple counting algorithm.
 These were training-data observations on synthetic data; no model or
 transaction decision policy was fitted at this stage.
+
+### First Logistic Baseline Comparison — 6 October 2026
+
+After the SQL exploration, I wrote an experiment plan and compared logistic
+regression using raw amount with the same model using log-transformed amount.
+I also kept constant training prevalence and descending amount as references,
+so I could judge whether fitting a model added anything at the same workload.
+
+I ran the models on 668,820 training rows and evaluated February's 167,990
+validation rows. At the declared 1% review budget, the log-amount model caught
+196 of 202 positive labels, compared with 188 for raw amount and 109 for
+amount ranking. Its 97.03% recall came with 11.67% precision and 1,484 false
+alarms. This distinction matters: catching most fraud labels did not mean
+that most flagged transactions were fraud.
+
+Both fits reported convergence, and the Mac test suite passed all 61 cases.
+I inspected the printed metrics and manifest excerpts for convergence,
+iterations, package versions and unknown categories. These checks did not
+independently verify the local prediction files or artifact hashes.
+
+I added a chart of fraud caught and precision at the three declared review
+budgets, backed by a committed aggregate count table. I also updated the
+README to distinguish this completed baseline checkpoint from the remaining
+feature-removal, calibration, cost and final holdout work. The
+[first-results account](logistic_baseline_first_results.md) records the
+evidence and what I can and cannot conclude from it.
