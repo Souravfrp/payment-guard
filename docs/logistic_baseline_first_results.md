@@ -17,11 +17,12 @@ The terminal confirmed 668,820 training rows and 167,990 validation rows,
 with test rows excluded. Both full-feature fits completed and the command
 reported the saved run at `models/logistic_baseline_v1`.
 
-This account is based on the terminal output I supplied. The saved metrics,
-run manifest and row-level predictions have not yet been independently
-inspected here. In particular, exact iteration counts, package versions,
-fit timings, cutoff ties and probability losses are not inferred from
-the completion message.
+This account initially used the completion output. I then supplied all 12
+rows of validation_metrics.csv through Terminal on 6 October 2026. The
+confusion counts reconcile to 167,990 validation transactions, 202 positives
+and each selected review budget. The run manifest, artifact hashes and
+row-level predictions remain uninspected; exact iteration counts, package
+versions and fit timings are not inferred from the completion message.
 
 ## What happened at the planned review budget
 
@@ -62,12 +63,71 @@ points. This is an observed difference on one validation month, not a
 statistical significance claim or proof that the log model is universally
 better.
 
+## All three declared review budgets
+
+The table gives caught fraud, false alarms, precision and recall from the
+saved metrics. Each approach uses the same number of reviews at each budget.
+Percentages are rounded for display.
+
+| Approach | Reviews | Caught fraud | False alarms | Precision | Recall |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Constant training rate | 168 | 0 | 168 | 0.00% | 0.00% |
+| Constant training rate | 840 | 2 | 838 | 0.24% | 0.99% |
+| Constant training rate | 1,680 | 4 | 1,676 | 0.24% | 1.98% |
+| Descending amount | 168 | 68 | 100 | 40.48% | 33.66% |
+| Descending amount | 840 | 99 | 741 | 11.79% | 49.01% |
+| Descending amount | 1,680 | 109 | 1,571 | 6.49% | 53.96% |
+| Logistic, raw amount | 168 | 157 | 11 | 93.45% | 77.72% |
+| Logistic, raw amount | 840 | 185 | 655 | 22.02% | 91.58% |
+| Logistic, raw amount | 1,680 | 188 | 1,492 | 11.19% | 93.07% |
+| Logistic, log amount | 168 | 166 | 2 | 98.81% | 82.18% |
+| Logistic, log amount | 840 | 194 | 646 | 23.10% | 96.04% |
+| Logistic, log amount | 1,680 | 196 | 1,484 | 11.67% | 97.03% |
+
+The log version caught more fraud than the raw version at all three
+predeclared budgets. At 168 reviews, 166 flags were correct but 36 fraud
+cases were missed. Its high precision at this budget should not be confused
+with catching nearly all fraud.
+
+For the same log-model ranking, moving from 840 to 1,680 reviews added
+840 flags: two fraud cases and 838 non-fraud cases. Only about 0.24% of
+these additional flags were fraud-labelled. This shows why review workload
+needs a cost-based decision later. It does not make 840 the optimal budget:
+I have not valued missed fraud, review effort or customer inconvenience.
+The original primary comparison remains the 1% budget.
+
+## Ranking and probability losses
+
+These metrics summarize the same score vector and therefore repeat across
+the three budget rows in the CSV; they are not three independent experiments.
+
+| Approach | Average precision (higher is better) | Log loss (lower is better) | Brier score (lower is better) |
+| --- | ---: | ---: | ---: |
+| Constant training rate | 0.00120245 | 0.00929984 | 0.00120104 |
+| Descending amount | 0.32553202 | Not applicable | Not applicable |
+| Logistic, raw amount | 0.88380035 | 0.00210094 | 0.00036204 |
+| Logistic, log amount | 0.94677814 | 0.00105914 | 0.00016918 |
+
+Average precision summarizes ranking performance across score thresholds;
+it is not accuracy or precision at one review budget. Amount ranking does
+not output probabilities, so probability losses are intentionally absent.
+
+The log model had lower log loss and Brier score than the raw model and
+constant reference on this validation period. Those losses reward useful
+probability predictions, but neither proves calibration on its own. With
+rare positives, an apparently small overall Brier score also needs a
+reference comparison and later calibration inspection.
+
+All amount-ranking and logistic cutoffs had one observation at the cutoff
+and no tie crossing it. The constant reference tied all 167,990 scores at
+every cutoff; its selected sets depended on the shared seeded tie order.
+
 ## What I still need to examine
 
-I will inspect the saved metrics at the other two declared review budgets,
-average precision, log loss, Brier score, convergence records and cutoff
-ties. The full run manifest also records the input hash and dependency
-versions needed to identify this experiment.
+I have inspected the supplied aggregate metrics at all three budgets.
+Next I will inspect the run manifest for convergence records, input and
+artifact hashes, unknown-category counts, timings and package versions.
+The metrics alone cannot verify that those local artifacts are unchanged.
 
 Next I will run the planned type/category removal comparisons. The earlier
 SQL exploration showed unusually strong label patterns in those synthetic
