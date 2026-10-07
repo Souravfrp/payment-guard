@@ -1,7 +1,8 @@
 # My first logistic-regression experiment
 
 Status: the first two full-feature fits completed on 6 October 2026.
-The six feature-removal fits are implemented; their full-data run remains pending.
+The six feature-removal fits and refitted controls completed on 7 October 2026;
+[ablation results are recorded separately](feature_ablation_results.md).
 See the [ablation run instructions](running_feature_ablation.md). The plan below was written
 before the first run; [results are recorded separately](logistic_baseline_first_results.md).
 
@@ -154,4 +155,5 @@ The first two full-feature fits and both reference scores are implemented in
 record the solver settings, local artifacts and small-fixture test evidence.
 The first full-data run completed on the Mac. The `--feature-ablation` option
 now adds the six planned removal variants and refits both full-feature controls
-in a separate run folder. The full-data ablation outcomes remain pending.
+in a separate run folder. The full-data run completed; see the ablation results
+for all declared comparisons and the limits of their interpretation.

@@ -1,8 +1,9 @@
 # Checking how much my model depends on type and category
 
-Status: the experiment is implemented and tested with small fixtures. The
-full-data ablation run and its interpretation are still pending. The original
-baseline results are unchanged.
+Status: the full-data ablation run completed on the Mac on 7 October 2026.
+The [results account](feature_ablation_results.md) records all variants and
+budgets, convergence evidence and limitations. The original baseline artifacts
+are unchanged.
 
 ## Why I am doing this
 
@@ -129,9 +130,9 @@ test rows are excluded and existing run folders are preserved. These are
 small-fixture software tests; full-data outcomes must come from the Mac run.
 
 Before publication on the feature branch, the expanded suite passed all 72
-tests on Linux (61 existing cases and 11 added cases). The Mac verification
-and full-data ablation run are still pending; this is not a claim about their
-outcome or runtime.
+tests on Linux (61 existing cases and 11 added cases). On 7 October 2026,
+the Mac suite passed all 72 cases in 2.75 seconds, followed by completion of
+the full-data ablation run. The test time is not a training benchmark.
 
 The existing four-model plotting script is specific to the first baseline
 checkpoint. Do not pass the 30-row ablation file to it. A separate comparison

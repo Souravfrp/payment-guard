@@ -108,3 +108,21 @@ README to distinguish this completed baseline checkpoint from the remaining
 feature-removal, calibration, cost and final holdout work. The
 [first-results account](logistic_baseline_first_results.md) records the
 evidence and what I can and cannot conclude from it.
+
+### Type and Category Removal — 7 October 2026
+
+I ran the six planned removal variants and refitted both full-feature controls
+at commit `055bc24`. My Mac passed all 72 tests, and all eight fits reported
+convergence. I kept the original run and saved the new experiment separately.
+
+The main lesson was that category carried much of the predictive signal in
+this comparison. At 1,680 reviews, the log model caught 196 positives with all
+features, 193 without type, 130 without category and 113 without both.
+Amount ranking caught 109. Raw amount performed better than log amount when
+category was removed, so I recorded that result too.
+
+I checked the printed results at every declared budget and recorded the
+reported package versions, iterations and unknown-category counts. This was
+an aggregate review; I have not independently rechecked local artifact hashes
+or individual prediction files. The [ablation account](feature_ablation_results.md)
+contains the full comparison and explains why dependence does not prove leakage.

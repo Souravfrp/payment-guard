@@ -2,7 +2,7 @@
 
 I am studying how to rank payment transactions for fraud review when only a small share can be checked. I started with data validation and SQL exploration, then compared two logistic regression baselines with simple reference rankings.
 
-**Current milestone: the first baseline comparison is complete.** This is an independent portfolio research project using synthetic AMLNet v2 data. It is not a deployed fraud-detection service or affiliated with a commercial product of the same name.
+**Current milestone: the baseline and type/category ablation comparisons are complete.** This is an independent portfolio research project using synthetic AMLNet v2 data. It is not a deployed fraud-detection service or affiliated with a commercial product of the same name.
 
 ## First result
 
@@ -29,7 +29,7 @@ The [results account](docs/logistic_baseline_first_results.md) includes all thre
 - **Leakage review:** examined nested metadata and excluded supplied risk scores, duplicate targets, post-transaction balances and annotations that reveal the target.
 - **SQLite and SQL analysis:** checked the imported table against every prepared value, then explored training-period amounts, transaction types, transfers and monthly fraud rates.
 - **Baseline experiment:** compared raw and log-transformed amounts using the same logistic model settings, plus constant-prevalence and amount-ranking references.
-- **Reproducible evaluation:** saved local model artifacts, predictions, dependency versions, hashes and convergence records; published aggregate results and a plotting script. The suite contains 61 passing tests at this checkpoint.
+- **Reproducible evaluation:** saved local model artifacts, predictions, dependency versions, hashes and convergence records; published aggregate results and a plotting script. The expanded suite contains 72 passing tests at this checkpoint.
 
 ## Why this comparison
 
@@ -47,11 +47,11 @@ The present training command reads and scores only training/validation periods. 
 
 ## Limits and next questions
 
-The data are fully synthetic. Strong scores may reflect how the dataset was generated; they do not establish performance on real payments. In particular, transaction type and category showed unusually strong label patterns. The planned comparisons with these fields removed are still pending. Device and location features also rely on an explicit assumption that they are available before authorization.
+The data are fully synthetic. Strong scores may reflect how the dataset was generated; they do not establish performance on real payments. In particular, transaction type and category showed unusually strong label patterns. The completed [feature-removal comparison](docs/feature_ablation_results.md) showed substantial dependence on category: at 1,680 reviews, the log model caught 196 positives with all features, 193 without type, 130 without category and 113 without both. Amount ranking caught 109. This is dependence in a synthetic-data validation experiment, not proof of leakage. Device and location features also rely on an explicit assumption that they are available before authorization.
 
 The current evaluation ranks an entire validation batch retrospectively. It does not implement a live threshold, establish calibrated probabilities or measure financial savings. The three review budgets were experiment choices, not measured business capacity. Local artifact hashes and individual predictions have not been independently rechecked against the supplied run excerpts.
 
-Next I will examine feature-removal comparisons, probability calibration and the costs of false alarms and missed fraud. Final holdout evaluation, drift analysis and an interactive dashboard remain future work.
+Next I will examine category patterns and model errors, probability calibration and the costs of false alarms and missed fraud. Final holdout evaluation, drift analysis and an interactive dashboard remain future work.
 
 ## Reproduce or inspect
 
@@ -71,7 +71,7 @@ PYTHONPATH=src python -m payment_guard.plot_logistic_baseline
 
 For a full training run, follow the [dataset source and download instructions](data/raw/amlnet_v2/README.md), [preparation account](docs/data_preparation.md) and [baseline run instructions](docs/running_logistic_baseline.md). The raw CSV is about 729 MiB; raw data, prepared tables, SQLite databases and model artifacts are excluded from Git. The dataset documentation records its source, checksums and CC BY-NC 4.0 license.
 
-The full baseline run and 61-test suite completed on my Mac. Run-specific package versions are recorded in the results account and local manifest. `environment.yml` defines the working environment but is not an exact dependency lockfile.
+The baseline and ablation runs completed on my Mac; the expanded 72-test suite passed. Run-specific package versions are recorded in the results account and local manifest. `environment.yml` defines the working environment but is not an exact dependency lockfile.
 
 ## Project guide
 
@@ -84,6 +84,7 @@ The full baseline run and 61-test suite completed on my Mac. Run-specific packag
 | Model reasoning | [Experiment plan](docs/baseline_experiment_plan.md) |
 | Model execution and outputs | [Run instructions](docs/running_logistic_baseline.md) · [Training code](src/payment_guard/train_logistic_baseline.py) |
 | Results and workload chart | [First results](docs/logistic_baseline_first_results.md) |
+| Feature-removal comparison | [Ablation results](docs/feature_ablation_results.md) · [Run instructions](docs/running_feature_ablation.md) |
 | Development history | [Project journal](docs/project_journal.md) |
 
 My broader question is how to connect fraud scores with approve, review and block decisions while accounting for missed fraud, customer inconvenience and review effort. This checkpoint provides the first measured ranking comparison for that work.
