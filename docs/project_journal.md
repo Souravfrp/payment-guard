@@ -139,3 +139,31 @@ I recorded both counts and percentages in my [category analysis](training_catego
 This helped me distinguish a category's fraud rate from its share of all fraud
 labels. I treated the findings as descriptive synthetic-data patterns, not
 proof of leakage or rules to apply to real payments.
+
+### Validation Errors and Score Contributions — 8 October 2026 (Asia/Kolkata)
+
+I followed up the category-removal experiment by locating the validation
+errors. Without category, 1,519 reviews went to Housing transactions labelled
+non-fraud. All were transfers. Comparing Housing transfers with other Housing
+transfers helped me avoid confusing differences in transaction-type mix with
+within-type amount and balance patterns.
+
+I then inspected the fitted coefficients and reconstructed two Housing scores
+immediately around the cutoff. Amount and TRANSFER were the largest positive
+contributions in these two cases. The remaining inputs nearly cancelled the
+difference in their amount contributions, leaving almost identical scores.
+The review budget selected rank 1,680 but excluded rank 1,681.
+
+My local script checked one-to-one row matching, labels, timestamps, ranking
+and the aggregate confusion counts, and reproduced both saved probabilities.
+I saved it as `scripts/explain_housing_cutoff.py`. These are illustrative
+model calculations, not causal explanations of all Housing errors. I did not
+refit the model or use the final test period for this analysis.
+
+I added a simple overview figure for the README and a separate technical
+waterfall figure. The plotting script uses recorded aggregate values and
+runs without the transaction dataset. The visual guide documents the source
+of each number, the grouped contributions and the difference between
+regenerating a figure and verifying a local model prediction. Artifact hashes
+remain unchecked; calibration, cost analysis and final holdout evaluation
+remain future work.
