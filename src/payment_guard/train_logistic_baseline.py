@@ -1,4 +1,4 @@
-"""Run the first two full-feature baselines without evaluating test rows."""
+"""Run logistic baselines and optional feature ablations without evaluating test rows."""
 from __future__ import annotations
 
 import argparse
@@ -28,6 +28,10 @@ CATEGORICAL = [
 ]
 NUMERICAL = ["amount", "oldbalanceOrg", "hour", "day_of_week", "day_of_month", "month"]
 FEATURES = NUMERICAL + CATEGORICAL
+FEATURE_REMOVALS = {
+    "full": (), "without_type": ("type",),
+    "without_category": ("category",), "without_both": ("type", "category"),
+}
 CYCLIC = {"hour": 24, "day_of_week": 7, "month": 12}
 SCALED = ["amount", "oldbalanceOrg", "day_of_month"]
 BUDGETS = (0.001, 0.005, 0.01)
@@ -77,9 +81,17 @@ def select_periods(data: pd.DataFrame, *, enforce_counts: bool = True):
     return tuple(result)
 
 
-def design_frame(data: pd.DataFrame, *, log_amount: bool) -> pd.DataFrame:
+def retained_features(excluded=()):
+    """Restrict ablations to the two fields specified in the experiment plan."""
+    excluded = tuple(excluded)
+    if len(set(excluded)) != len(excluded) or not set(excluded) <= {"type", "category"}:
+        raise ValueError("Only unique type/category removals are supported.")
+    return [field for field in FEATURES if field not in excluded]
+
+
+def design_frame(data: pd.DataFrame, *, log_amount: bool, excluded=()) -> pd.DataFrame:
     """Fixed, label-free feature construction; no fitted state or hidden columns."""
-    result = data[FEATURES].copy()
+    result = data[retained_features(excluded)].copy()
     if log_amount:
         result["amount"] = np.log1p(result["amount"])
     for name, period in CYCLIC.items():
@@ -89,12 +101,14 @@ def design_frame(data: pd.DataFrame, *, log_amount: bool) -> pd.DataFrame:
     return result
 
 
-def make_pipeline(*, max_iter: int = 2000) -> Pipeline:
+def make_pipeline(*, max_iter: int = 2000, excluded=()) -> Pipeline:
+    retained = retained_features(excluded)
+    categorical = [field for field in CATEGORICAL if field in retained]
     cyclic_columns = [name + suffix for name in CYCLIC for suffix in ("_sin", "_cos")]
     preprocessing = ColumnTransformer([
         ("scaled", StandardScaler(), SCALED),
         ("cyclic", "passthrough", cyclic_columns),
-        ("categorical", OneHotEncoder(handle_unknown="ignore", sparse_output=True), CATEGORICAL),
+        ("categorical", OneHotEncoder(handle_unknown="ignore", sparse_output=True), categorical),
     ], remainder="drop", sparse_threshold=1.0)
     # L2 is the LogisticRegression default across supported sklearn versions.
     # Omitting the deprecated penalty argument avoids version-specific warnings.
@@ -103,12 +117,12 @@ def make_pipeline(*, max_iter: int = 2000) -> Pipeline:
     return Pipeline([("preprocess", preprocessing), ("model", model)])
 
 
-def fit_model(train: pd.DataFrame, *, log_amount: bool, max_iter: int = 2000):
-    pipeline = make_pipeline(max_iter=max_iter)
+def fit_model(train: pd.DataFrame, *, log_amount: bool, max_iter: int = 2000, excluded=()):
+    pipeline = make_pipeline(max_iter=max_iter, excluded=excluded)
     with warnings.catch_warnings():
         warnings.simplefilter("error", ConvergenceWarning)
         try:
-            pipeline.fit(design_frame(train, log_amount=log_amount), train["isFraud"])
+            pipeline.fit(design_frame(train, log_amount=log_amount, excluded=excluded), train["isFraud"])
         except ConvergenceWarning as error:
             raise RuntimeError("Logistic fit did not converge. No completed run was saved; inspect before retrying.") from error
     if not np.isfinite(pipeline.named_steps["model"].coef_).all():
@@ -157,8 +171,9 @@ def evaluate_scores(labels, scores, tie_priority, *, probabilities: bool):
     return rows
 
 
-def run_experiment(train: pd.DataFrame, validation: pd.DataFrame, *, max_iter: int = 2000):
-    """Two full-feature fits plus constant and amount-ranking references."""
+def run_experiment(train: pd.DataFrame, validation: pd.DataFrame, *, max_iter: int = 2000,
+                   feature_ablation: bool = False):
+    """Two full-feature fits, optionally six removals, plus two references."""
     # select_periods supplies a stable source-row order before this permutation.
     ties = np.random.default_rng(SEED).permutation(len(validation))
     y = validation["isFraud"].to_numpy()
@@ -172,13 +187,19 @@ def run_experiment(train: pd.DataFrame, validation: pd.DataFrame, *, max_iter: i
     for name, (scores, probability) in references.items():
         predictions[name] = scores
         metrics.extend({"model": name, **row} for row in evaluate_scores(y, scores, ties, probabilities=probability))
-    for name, log_amount in (("logistic_raw", False), ("logistic_log", True)):
+    groups = FEATURE_REMOVALS if feature_ablation else {"full": ()}
+    variants = [(f"logistic_{transform}" + ("" if group == "full" else f"_{group}"),
+                 log_amount, group, excluded)
+                for group, excluded in groups.items()
+                for transform, log_amount in (("raw", False), ("log", True))]
+    for name, log_amount, group, excluded in variants:
+        categorical = [field for field in CATEGORICAL if field not in excluded]
         print(f"Fitting {name} on {len(train):,} training rows...", flush=True)
         started = perf_counter()
-        fitted = fit_model(train, log_amount=log_amount, max_iter=max_iter)
+        fitted = fit_model(train, log_amount=log_amount, max_iter=max_iter, excluded=excluded)
         fit_seconds = perf_counter() - started
         started = perf_counter()
-        scores = fitted.predict_proba(design_frame(validation, log_amount=log_amount))[:, 1]
+        scores = fitted.predict_proba(design_frame(validation, log_amount=log_amount, excluded=excluded))[:, 1]
         score_seconds = perf_counter() - started
         metrics.extend({"model": name, **row} for row in evaluate_scores(y, scores, ties, probabilities=True))
         predictions[name] = scores
@@ -186,12 +207,14 @@ def run_experiment(train: pd.DataFrame, validation: pd.DataFrame, *, max_iter: i
         encoder = preprocess.named_transformers_["categorical"]
         scaler = preprocess.named_transformers_["scaled"]
         unknown = {field: int((~validation[field].isin(categories)).sum())
-                   for field, categories in zip(CATEGORICAL, encoder.categories_)}
+                   for field, categories in zip(categorical, encoder.categories_)}
         model = fitted.named_steps["model"]
         records[name] = {
+            "feature_group": group, "excluded_features": list(excluded),
+            "source_features": retained_features(excluded),
             "log_amount": log_amount, "feature_names": preprocess.get_feature_names_out().tolist(),
             "unknown_validation_categories": unknown,
-            "training_categories": {field: values.tolist() for field, values in zip(CATEGORICAL, encoder.categories_)},
+            "training_categories": {field: values.tolist() for field, values in zip(categorical, encoder.categories_)},
             "scaler_columns": SCALED, "training_means": scaler.mean_.tolist(),
             "training_scales": scaler.scale_.tolist(), "coefficients": model.coef_[0].tolist(),
             "intercept": float(model.intercept_[0]), "iterations": model.n_iter_.tolist(),
@@ -238,9 +261,13 @@ def main():
     root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, default=root / "data/processed/amlnet_v2_prepared.parquet")
-    parser.add_argument("--output", type=Path, default=root / "models/logistic_baseline_v1")
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--feature-ablation", action="store_true",
+                        help="Refit two full-feature controls and six type/category removal variants.")
     parser.add_argument("--max-iter", type=int, default=2000)
     args = parser.parse_args()
+    if args.output is None:
+        args.output = root / "models" / ("logistic_ablation_v1" if args.feature_ablation else "logistic_baseline_v1")
     if args.max_iter < 1:
         parser.error("--max-iter must be positive")
     if args.output.exists():
@@ -257,7 +284,8 @@ def main():
     train, validation = select_periods(data)
     del data
     print(f"Train: {len(train):,} rows; validation: {len(validation):,} rows. Test rows excluded.", flush=True)
-    metrics, predictions, records, models = run_experiment(train, validation, max_iter=args.max_iter)
+    metrics, predictions, records, models = run_experiment(
+        train, validation, max_iter=args.max_iter, feature_ablation=args.feature_ablation)
     metadata = {
         "created_utc": datetime.now(timezone.utc).isoformat(), "input_sha256": fingerprint,
         "input_bytes": before.st_size, "git": git_state(root), "features": FEATURES,
@@ -267,7 +295,9 @@ def main():
         "packages": {name: version(name) for name in ("numpy", "pandas", "scipy", "scikit-learn", "pyarrow", "joblib")},
         "python": platform.python_version(), "platform": platform.platform(),
         "elapsed_before_save_seconds": perf_counter() - started,
-        "scope": "First two full-feature logistic fits; feature removals pending; no test evaluation.",
+        "scope": ("Eight logistic fits: two full-feature controls and six feature removals; no test evaluation."
+                  if args.feature_ablation else "First two full-feature logistic fits; feature removals pending; no test evaluation."),
+        "feature_ablation": args.feature_ablation,
         "ranking_note": "Retrospective batch top-k, not a real-time decision threshold.",
     }
     save_run(args.output, metrics, predictions, records, models, metadata)

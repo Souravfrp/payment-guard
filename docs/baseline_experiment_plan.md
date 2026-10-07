@@ -1,7 +1,8 @@
 # My first logistic-regression experiment
 
 Status: the first two full-feature fits completed on 6 October 2026.
-The six feature-removal fits remain pending. The plan below was written
+The six feature-removal fits are implemented; their full-data run remains pending.
+See the [ablation run instructions](running_feature_ablation.md). The plan below was written
 before the first run; [results are recorded separately](logistic_baseline_first_results.md).
 
 ## What I want to find out
@@ -151,5 +152,6 @@ this first experiment.
 The first two full-feature fits and both reference scores are implemented in
 `src/payment_guard/train_logistic_baseline.py`. The [run instructions](running_logistic_baseline.md)
 record the solver settings, local artifacts and small-fixture test evidence.
-The first full-data run completed on the Mac. The six feature-removal fits are planned
-for the next implementation step after inspecting the initial run.
+The first full-data run completed on the Mac. The `--feature-ablation` option
+now adds the six planned removal variants and refits both full-feature controls
+in a separate run folder. The full-data ablation outcomes remain pending.
