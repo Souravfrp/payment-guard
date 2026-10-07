@@ -168,3 +168,11 @@ included the final period, so it is not an entirely unseen dataset.
 The [experiment plan](baseline_experiment_plan.md) and
 [run instructions](running_feature_ablation.md) explain the design. The original
 baseline account remains a record of the earlier checkpoint.
+
+## Follow-up training SQL investigation
+
+The [category analysis](training_category_analysis.md) records the completed
+category and monthly summaries. Its counts reconcile to 668,820 training rows
+and 931 positives. Six categories had no observed fraud in any training month;
+Other contained 801 positives. These descriptive patterns help interpret the
+ablation, but do not prove leakage or establish real-world risk rules.

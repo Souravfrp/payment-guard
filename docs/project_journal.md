@@ -126,3 +126,16 @@ reported package versions, iterations and unknown-category counts. This was
 an aggregate review; I have not independently rechecked local artifact hashes
 or individual prediction files. The [ablation account](feature_ablation_results.md)
 contains the full comparison and explains why dependence does not prove leakage.
+
+### Category Patterns After the Ablation — 7 October 2026
+
+I returned to SQL to understand why removing category affected performance.
+I grouped training rows by category and then by month and category. The monthly
+counts reconciled to 668,820 rows and 931 positives. Other contained 801 positive
+labels, while six categories had none in any training month. The two categories
+with 100% positive rates had only 14 transactions combined.
+
+I recorded both counts and percentages in my [category analysis](training_category_analysis.md).
+This helped me distinguish a category's fraud rate from its share of all fraud
+labels. I treated the findings as descriptive synthetic-data patterns, not
+proof of leakage or rules to apply to real payments.

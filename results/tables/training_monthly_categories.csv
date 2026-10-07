@@ -1,0 +1,42 @@
+transaction_month,category,transactions,fraud_transactions,fraud_percentage
+2026-01,Cryptocurrency,1,1,100.000
+2025-10,Education,4877,0,0.000
+2025-11,Education,6974,0,0.000
+2025-12,Education,7621,0,0.000
+2026-01,Education,7252,0,0.000
+2025-10,Food,20504,0,0.000
+2025-11,Food,29098,0,0.000
+2025-12,Food,32290,0,0.000
+2026-01,Food,31714,0,0.000
+2025-10,Healthcare,7075,0,0.000
+2025-11,Healthcare,10286,0,0.000
+2025-12,Healthcare,11405,0,0.000
+2026-01,Healthcare,11237,0,0.000
+2025-10,Housing,24151,0,0.000
+2025-11,Housing,34135,0,0.000
+2025-12,Housing,37441,0,0.000
+2026-01,Housing,37139,0,0.000
+2025-10,Other,26407,176,0.666
+2025-11,Other,37817,200,0.529
+2025-12,Other,41857,170,0.406
+2026-01,Other,40970,255,0.622
+2025-10,Property Investment,4,4,100.000
+2025-11,Property Investment,4,4,100.000
+2025-12,Property Investment,4,4,100.000
+2026-01,Property Investment,1,1,100.000
+2025-10,Recreation,15816,27,0.171
+2025-11,Recreation,22359,4,0.018
+2025-12,Recreation,24888,10,0.040
+2026-01,Recreation,24232,8,0.033
+2025-10,Shell Company,138,19,13.768
+2025-11,Shell Company,183,18,9.836
+2025-12,Shell Company,217,14,6.452
+2026-01,Shell Company,201,16,7.960
+2025-10,Transport,18353,0,0.000
+2025-11,Transport,25758,0,0.000
+2025-12,Transport,28521,0,0.000
+2026-01,Transport,27823,0,0.000
+2025-10,Utilities,3554,0,0.000
+2025-11,Utilities,5175,0,0.000
+2025-12,Utilities,5811,0,0.000
+2026-01,Utilities,5527,0,0.000
