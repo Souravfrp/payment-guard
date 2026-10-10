@@ -164,9 +164,7 @@ I added a simple overview figure for the README and a separate technical
 waterfall figure. The plotting script uses recorded aggregate values and
 runs without the transaction dataset. The visual guide documents the source
 of each number, the grouped contributions and the difference between
-regenerating a figure and verifying a local model prediction. Artifact hashes
-remain unchecked; calibration, cost analysis and final holdout evaluation
-remain future work.
+regenerating a figure and verifying a local model prediction. At this 8 October checkpoint, artifact hashes remained unchecked, and calibration, cost analysis and final holdout evaluation were still future work. The later review-cost milestone below records the cost work subsequently completed.
 
 
 ### Review Costs, Value Capture and Numerical Verification — October 2026
