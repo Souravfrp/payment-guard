@@ -51,11 +51,25 @@ The owner's `analyze_missed_fraud.py` run produced the following source-row IDs 
 
 All six are transfers; three belong to each of the two listed categories. This describes the errors but does not establish why the model ranked them poorly. Feature-level comparisons and more data would be needed for an explanation.
 
+## Corrected validation amount-band fraud rates
+
+A local check found an exploratory percentage-calculation error: the grouped `fraud_cases` column had NumPy/pandas dtype `int8`, and evaluating `100 * fraud_cases / transactions` overflowed before division. The owner reran the calculation after casting counts to `float64`, confirming the following figures:
+
+| Transaction amount band | Validation transactions | Fraud-labelled cases | Fraud rate |
+| --- | ---: | ---: | ---: |
+| <100 | 36,712 | 3 | 0.008172% |
+| 100–<1,000 | 98,614 | 23 | 0.023323% |
+| 1,000–<10,000 | 32,580 | 124 | 0.380602% |
+| ≥10,000 | 84 | 52 | 61.904762% |
+| **Total** | **167,990** | **202** | **0.120245%** |
+
+Use `100.0 * fraud_cases.astype("float64") / transactions.astype("float64")` (or divide before multiplying). The invalid prior rates, including a negative rate, must not be cited. This issue was found in a separate exploratory aggregation, not in the committed model ranking metrics. The highest band has only 84 observations; its observed fraud rate should not be generalized to real payments.
+
 ## Research questions answered and unanswered
 
 The fixed-budget comparison quantifies how many positive labels are recovered per available investigation slot. The missed-case script can identify which labelled positives lie below the cutoff. The cost scenarios show how rankings and budgets would compare under specified assumptions. They do **not** establish real bank costs, optimal thresholds, calibration, causal feature importance, generalization to real transactions, or final holdout performance.
 
-A separate within-amount-band diagnostic was reported locally; because its generating script and full input evidence were not supplied in this ZIP, I have not elevated its detailed band-level counts to independently verified repository results. Earlier band-rate output also requires a fresh denominator check.
+A separate within-amount-band diagnostic was reported locally; because its generating script and full input evidence were not supplied in this ZIP, I have not elevated its detailed band-level counts to independently verified repository results. The earlier band-rate output was corrected using floating-point arithmetic; see the verified table above.
 
 ## Run locally
 
