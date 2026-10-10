@@ -30,7 +30,7 @@ The transaction-value diagnostic sums the amounts of fraud-labelled transactions
 
 ## Evidence and reproducibility boundaries
 
-The committed aggregate CSV `results/tables/logistic_ablation_summary.csv` supports the model-level counts. Local files `models/logistic_ablation_v1/validation_predictions.parquet` and `data/processed/amlnet_v2_prepared.parquet` are required for row-level value capture, missed-case investigation, and within-band comparisons. Scripts under `scripts/analyze_*.py` reconstruct those diagnostics; publishing the scripts does not mean this GitHub update independently reran them. A discrepancy in an earlier amount-band fraud-rate printout must be resolved before treating those percentages as verified.
+The committed aggregate CSV `results/tables/logistic_ablation_summary.csv` supports the model-level counts. Local files `models/logistic_ablation_v1/validation_predictions.parquet` and `data/processed/amlnet_v2_prepared.parquet` are required for row-level value capture, missed-case investigation, and within-band comparisons. Scripts under `scripts/analyze_*.py` reconstruct those diagnostics; publishing the scripts does not mean this GitHub update independently reran them. An earlier exploratory amount-band fraud-rate calculation overflowed because the grouped fraud count had `int8` dtype. The owner reran it using floating-point arithmetic and confirmed the corrected rates; see the [follow-up table](review_cost_followup.md#corrected-validation-amount-band-fraud-rates). This correction concerns exploratory rates, not the committed ranking metrics.
 
 ## Interpretation and limits
 
