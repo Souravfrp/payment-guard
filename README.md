@@ -119,6 +119,7 @@ PYTHONPATH=src python scripts/explain_housing_cutoff.py
 | Results and workload chart | [First results](docs/logistic_baseline_first_results.md) |
 | Feature-removal comparison | [Ablation results](docs/feature_ablation_results.md) · [Run instructions](docs/running_feature_ablation.md) |
 | Visual explanation and score reconstruction | [Visual guide](docs/visual_results_guide.md) · [Housing scores](docs/housing_score_contributions.md) |
+| Review-budget methodology and follow-up | [Mathematical methodology](docs/review_budget_methodology.md) · [Cost and missed-case results](docs/review_cost_followup.md) |
 | Development history | [Project journal](docs/project_journal.md) |
 
 My broader question is how to connect fraud scores with approve, review and block decisions while accounting for missed fraud, customer inconvenience and review effort. This checkpoint provides the first measured ranking comparison for that work.
