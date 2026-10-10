@@ -158,10 +158,7 @@ settings. It did not tune a separate regularization strength for each feature
 set. The result is predictive dependence under this protocol, not a causal
 estimate, proof of leakage, or a statistical significance claim.
 
-I have now completed the planned eight-fit comparison. Before treating a model
-as suitable for use, I still need to examine errors and category patterns,
-then separately address calibration, decision costs and final holdout
-evaluation. No test-period model evaluation, real-payment validation or live
+I have now completed the planned eight-fit comparison. At this ablation checkpoint I had not yet examined the validation errors or category patterns. I subsequently documented [category investigation](training_category_analysis.md), [validation errors](validation_category_errors.md), [two score reconstructions](housing_score_contributions.md), and [exploratory decision costs and missed cases](review_cost_followup.md). Calibration, temporal robustness and final holdout evaluation remain outstanding. No test-period model evaluation, real-payment validation or live
 approval/review/block policy was performed. Earlier exploratory auditing
 included the final period, so it is not an entirely unseen dataset.
 
