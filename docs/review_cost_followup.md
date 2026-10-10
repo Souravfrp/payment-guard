@@ -2,7 +2,7 @@
 
 ## Status
 
-This is an exploratory follow-up to the completed February validation ablation, not a new model fit or holdout evaluation. The scripts were supplied for code review; their full-data execution was **not** independently reproduced during this GitHub update because row-level predictions and prepared Parquet data remain local.
+This is an exploratory follow-up to the completed February validation ablation, not a new model fit or holdout evaluation. The scripts were reviewed and subsequently run by the project owner in the local `payment-guard` environment. The owner shared terminal outputs for the four scripts and a test run of **72 passed, 70 dependency deprecation warnings**. These are user-reported local executions, not an independent execution by the GitHub documentation updater. The saved row-level Parquet files remain local.
 
 ## Established aggregate comparison
 
@@ -24,7 +24,32 @@ These figures are reconciled with the committed `logistic_ablation_summary.csv`.
 - `analyze_fraud_value_capture.py` joins saved validation predictions to transaction amounts by unique source row, checks labels and reconstructed top-k caught counts, and compares count recall with the share of fraud-labelled transaction amount selected.
 - `analyze_missed_fraud.py` joins the saved log-model scores to validation transaction details and reports positives below rank 1,680. It asserts six misses and a summed transaction amount of 5,052.04 units, so it will fail if the underlying saved run differs.
 
-The earlier local diagnostic reported 2,109,203.43 total fraud-labelled validation transaction-amount units and 2,104,151.39 captured by the full log model at 1,680 reviews (99.76%). Those figures are **previously reported local outputs**, not independently verified by this update. Amount capture is not loss prevention.
+The earlier local diagnostic reported 2,109,203.43 total fraud-labelled validation transaction-amount units and 2,104,151.39 captured by the full log model at 1,680 reviews (99.76%). Those figures were **confirmed by the owner's subsequent local script execution**: all 27 model-budget caught counts matched the committed aggregate summary. The row-level files were not uploaded for an independent rerun. Amount capture is not loss prevention.
+
+## Locally checked economic sensitivity
+
+At a review cost of INR 100 and a missed-label cost of INR 50,000, the lowest hypothetical total among the 30 model-budget combinations is **INR 468,000** for the full log model at 1,680 reviews (196 caught, six missed, 1,484 false alarms). The same model at 840 reviews costs **INR 484,000** (194 caught, eight missed). These are assumed costs, not measured losses or savings.
+
+The owner also ran the cost-ratio sensitivity script. For tested missed-to-review cost ratios **1, 10, 24**, the preferred option was the log model at **168** reviews; for **50, 100, 200, 420**, it was the log model at **840** reviews; and for **500, 1,000**, it was the log model at **1,680** reviews. These are tested points, not complete intervals. For the full log model, C(840)=840c_r+8c_m and C(1680)=1680c_r+6c_m; they tie at c_m/c_r=420. The script favors the smaller budget in a tie.
+
+## Locally checked transaction-value results
+
+The owner's validation run printed **2,109,203.43** total fraud-labelled transaction-amount units. At 1,680 reviews, the amount-ranking reference caught 109 labels and **90.93%** of fraud-labelled amount; the raw-amount logistic model caught 188 and **99.26%**; and the log-amount logistic model caught 196 and **99.76%** (**2,104,151.39** units). The remaining six positives sum to **5,052.04** units. This is labelled transaction amount, **not** observed losses prevented or money recovered.
+
+## Missed positives under the full log model at 1,680 reviews
+
+The owner's `analyze_missed_fraud.py` run produced the following source-row IDs and ranks:
+
+| Source row | Rank | Amount (dataset units) | Type | Category |
+| ---: | ---: | ---: | --- | --- |
+| 830467 | 1,799 | 2,421.62 | TRANSFER | Shell Company |
+| 830408 | 2,457 | 2,213.78 | TRANSFER | Shell Company |
+| 719998 | 3,969 | 231.69 | TRANSFER | Other |
+| 722735 | 19,569 | 69.52 | TRANSFER | Other |
+| 722740 | 27,862 | 41.37 | TRANSFER | Other |
+| 816607 | 147,092 | 74.05 | TRANSFER | Shell Company |
+
+All six are transfers; three belong to each of the two listed categories. This describes the errors but does not establish why the model ranked them poorly. Feature-level comparisons and more data would be needed for an explanation.
 
 ## Research questions answered and unanswered
 
