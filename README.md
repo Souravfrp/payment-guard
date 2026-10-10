@@ -2,7 +2,7 @@
 
 I am studying how to rank payment transactions for fraud review when only a small share can be checked. I started with data validation and SQL exploration, then compared two logistic regression baselines with simple reference rankings.
 
-**Current milestone: baseline and feature-ablation comparisons, category error analysis, and two individual score reconstructions are complete.** This is an independent portfolio research project using synthetic AMLNet v2 data. It is not a deployed fraud-detection service or affiliated with a commercial product of the same name.
+**Current milestone: the baseline and feature-ablation comparisons, category error analysis, two individual score reconstructions, and exploratory review-cost, value-capture and missed-case analyses are complete.** This is an independent portfolio research project using synthetic AMLNet v2 data. It is not a deployed fraud-detection service or affiliated with a commercial product of the same name.
 
 ## First result
 
@@ -70,7 +70,7 @@ The data are fully synthetic. Strong scores may reflect how the dataset was gene
 
 The current evaluation ranks an entire validation batch retrospectively. It does not implement a live threshold, establish calibrated probabilities or measure financial savings. The three review budgets were experiment choices, not measured business capacity. Local artifact hashes have not been independently verified. A subsequent local diagnostic reproduced the without-category confusion counts and reconstructed two saved Housing probabilities; this did not verify every prediction.
 
-I examined training category patterns and validation errors, then reconstructed two Housing scores around the review cutoff. Next I will study probability calibration and the costs of false alarms and missed fraud. Final holdout evaluation, drift analysis and an interactive dashboard remain future work.
+I examined training category patterns and validation errors, then reconstructed two Housing scores around the review cutoff. I subsequently examined hypothetical review costs, cost-ratio sensitivity, fraud-labelled transaction-value capture and six missed positives. Probability calibration, deeper feature-level investigation of those misses, temporal drift analysis and final holdout evaluation remain future work. A dashboard is optional, not part of this completed milestone.
 
 ## Reproduce or inspect
 
@@ -125,4 +125,4 @@ My broader question is how to connect fraud scores with approve, review and bloc
 
 ## Review-budget and cost follow-up
 
-I have added a [mathematical formulation and review-budget methodology](docs/review_budget_methodology.md) and a [cost, transaction-value and missed-case research account](docs/review_cost_followup.md). Four reproducible analysis scripts under `scripts/analyze_*.py` examine hypothetical review costs, sensitivity to cost ratios, fraud-labelled transaction-value capture and the missed positive labels. These are **exploratory validation diagnostics**, not a live policy or demonstrated savings. The row-level scripts require local Parquet data and saved model predictions that are intentionally not committed; their full-data execution has not been independently rerun for this documentation update. An earlier amount-band fraud-rate display discrepancy remains to be checked before publishing those rates.
+I have added a [mathematical formulation and review-budget methodology](docs/review_budget_methodology.md) and a [cost, transaction-value and missed-case research account](docs/review_cost_followup.md). Four reproducible analysis scripts under `scripts/analyze_*.py` examine hypothetical review costs, sensitivity to cost ratios, fraud-labelled transaction-value capture and the missed positive labels. These are **exploratory validation diagnostics**, not a live policy or demonstrated savings. The row-level scripts require local Parquet data and saved model predictions that are intentionally not committed. A separate validation amount-band percentage calculation was corrected after detecting integer overflow in an `int8` grouped count; the verified rates and calculation are documented in the follow-up account. The owner ran all four scripts locally and reported 72 passing tests; row-level data and artifacts remain local, so this is not an independent full-data rerun.
