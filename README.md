@@ -122,3 +122,7 @@ PYTHONPATH=src python scripts/explain_housing_cutoff.py
 | Development history | [Project journal](docs/project_journal.md) |
 
 My broader question is how to connect fraud scores with approve, review and block decisions while accounting for missed fraud, customer inconvenience and review effort. This checkpoint provides the first measured ranking comparison for that work.
+
+## Review-budget and cost follow-up
+
+I have added a [mathematical formulation and review-budget methodology](docs/review_budget_methodology.md) and a [cost, transaction-value and missed-case research account](docs/review_cost_followup.md). Four reproducible analysis scripts under `scripts/analyze_*.py` examine hypothetical review costs, sensitivity to cost ratios, fraud-labelled transaction-value capture and the missed positive labels. These are **exploratory validation diagnostics**, not a live policy or demonstrated savings. The row-level scripts require local Parquet data and saved model predictions that are intentionally not committed; their full-data execution has not been independently rerun for this documentation update. An earlier amount-band fraud-rate display discrepancy remains to be checked before publishing those rates.
