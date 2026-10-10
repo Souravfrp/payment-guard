@@ -166,7 +166,7 @@ The plotting command reads existing counts and never retrains a model.
 It replaces the specified figure if one already exists, but does not change
 the input metrics, predictions or fitted model files.
 
-## What I still need to examine
+## What remained after this first baseline checkpoint
 
 I have inspected the supplied aggregate metrics at all three budgets.
 I have also inspected the supplied manifest excerpt for convergence,
@@ -174,12 +174,9 @@ unknown categories, timings and package versions. Input and artifact hashes
 remain unchecked; the supplied excerpts cannot establish that all local
 artifacts are unchanged.
 
-Next I will run the planned type/category removal comparisons. The earlier
-SQL exploration showed unusually strong label patterns in those synthetic
-fields, so the current scores are not enough to establish robustness.
+I subsequently completed the planned [type/category removal comparisons](feature_ablation_results.md), investigated [validation errors](validation_category_errors.md), and documented [exploratory cost and missed-case results](review_cost_followup.md). The earlier SQL exploration showed unusually strong label patterns in those synthetic fields, so the original baseline scores alone were not enough to establish robustness.
 
-No test-period evaluation, probability recalibration, cost optimization or
-live approve/review/block policy has been completed. The 1% budget is a
+No test-period evaluation, probability recalibration, globally optimized cost policy or live approve/review/block policy has been completed. Later work compares hypothetical costs at three predefined budgets, not real bank costs or a globally optimal policy. The 1% budget is a
 retrospective batch-ranking experiment, not a measured business capacity.
 The synthetic-data limitation and the prior exploratory auditing of the
 test period remain unchanged.
