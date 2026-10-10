@@ -167,3 +167,14 @@ of each number, the grouped contributions and the difference between
 regenerating a figure and verifying a local model prediction. Artifact hashes
 remain unchecked; calibration, cost analysis and final holdout evaluation
 remain future work.
+
+
+### Review Costs, Value Capture and Numerical Verification — October 2026
+
+I followed the fixed-budget validation comparisons with four analysis scripts. They compared hypothetical investigation costs, tested different missed-case-to-review-cost ratios, measured the share of fraud-labelled transaction amount selected, and listed the six positive labels below the full log model's 1,680-review cutoff. I ran the scripts locally and checked their printed results against the saved aggregate counts. The test suite reported 72 passed with 70 dependency deprecation warnings. These were my local runs, not an independent rerun of the saved row-level artifacts.
+
+At 1,680 reviews the full log model caught 196 of 202 positive labels, leaving six missed and 1,484 false alarms. It selected 99.76% of the fraud-labelled transaction amount (in dataset units). Under the explicitly hypothetical costs of INR 100 per review and INR 50,000 per missed positive, its scenario total was INR 468,000. Neither transaction-value capture nor the cost scenario is a claim of prevented financial loss. The six missed cases were all transfers; their amounts and categories describe them but do not explain their model scores.
+
+I also caught a numerical problem while checking validation amount-band fraud rates. The grouped positive count was stored as `int8`, so multiplying it by 100 before division overflowed, even producing a negative rate. I recomputed the percentages using `float64` and checked that the four bands reconcile to 167,990 validation rows and 202 positive labels. I recorded the corrected rates and the cause in the [cost follow-up](review_cost_followup.md), without changing the fitted models or their saved ranking results.
+
+I am stopping this milestone at a tested, documented retrospective validation study. Calibration, a feature-level investigation of the six misses, temporal drift, and final chronological holdout evaluation are deliberately deferred. The [methodology](review_budget_methodology.md) describes the mathematics and assumptions; the [follow-up account](review_cost_followup.md) separates verified local outputs from interpretations that the evidence cannot support.
