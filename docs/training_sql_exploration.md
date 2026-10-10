@@ -193,3 +193,8 @@ The initial average-amount query was run interactively; it is not one of
 these four saved queries. The [SQLite validation account](sql_validation.md)
 records the separate full comparison against the prepared Parquet file.
 No model was trained during this SQL exploration.
+
+
+## Subsequent milestone note
+
+This page preserves the training-only SQL questions and conclusions as recorded before model evaluation. The later [baseline and feature-ablation results](feature_ablation_results.md) and [exploratory review-cost analysis](review_cost_followup.md) address some of the questions posed here. Probability calibration, temporal robustness and final holdout evaluation are not complete.
