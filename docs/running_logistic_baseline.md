@@ -2,7 +2,7 @@
 
 I have implemented the first stage of my [experiment plan](baseline_experiment_plan.md):
 full-feature logistic regression with raw amount, and the same model with
-log-transformed amount. The type/category removal comparisons remain pending.
+log-transformed amount. The type/category removal comparisons were completed subsequently; see [feature-ablation results](feature_ablation_results.md). This page retains the first-run procedure and evidence.
 The first full-data run completed on my Mac on 6 October 2026. My
 [first results](logistic_baseline_first_results.md) record the terminal evidence
 and interpretation. I have inspected the printed metrics and manifest excerpts;
