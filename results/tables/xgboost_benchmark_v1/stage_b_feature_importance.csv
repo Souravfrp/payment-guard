@@ -1,0 +1,14 @@
+feature,normalized_gain
+category,0.6663652453571558
+type,0.1740934969857335
+amount,0.06023168936371803
+metadata.location.city,0.018819193355739117
+hour,0.017969956621527672
+metadata.location.state,0.01422024704515934
+oldbalanceOrg,0.013729016296565533
+day_of_week,0.0136446887627244
+month,0.013121778145432472
+day_of_month,0.007804677821695805
+metadata.device_info.os,0.0
+metadata.device_info.type,0.0
+metadata.payment_method,0.0
