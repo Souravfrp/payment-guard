@@ -2,7 +2,7 @@
 
 I am studying how to rank payment transactions for fraud review when only a small share can be checked. I started with data validation and SQL exploration, then compared two logistic regression baselines with simple reference rankings.
 
-**Current milestone: I verified my logistic baseline and feature-ablation results, investigated six missed positive labels, and completed a forward-only probability-calibration study with saved-run verification and revised reliability figures.** This is an independent portfolio research project using synthetic AMLNet v2 data. It is not a deployed fraud-detection service or affiliated with a commercial product of the same name.
+**Current milestone: I verified my logistic baseline and calibration research, then added a chronological XGBoost benchmark with independently checked aggregate results, saved-model verification and revised visualizations.** This is an independent portfolio research project using synthetic AMLNet v2 data. It is not a deployed fraud-detection service or affiliated with a commercial product of the same name.
 
 ## First result
 
@@ -48,7 +48,7 @@ provides the wider breakdown.
 - **Leakage review:** examined nested metadata and excluded supplied risk scores, duplicate targets, post-transaction balances and annotations that reveal the target.
 - **SQLite and SQL analysis:** checked the imported table against every prepared value, then explored training-period amounts, transaction types, transfers and monthly fraud rates.
 - **Baseline experiment:** compared raw and log-transformed amounts using the same logistic model settings, plus constant-prevalence and amount-ranking references.
-- **Reproducible evaluation:** saved local model artifacts, predictions, dependency versions, hashes and convergence records; published aggregate results and a plotting script. The expanded suite now has 124 passing tests on my Mac, including saved-run verification, calibration and visualization checks.
+- **Reproducible evaluation:** saved local model artifacts, predictions, dependency versions, hashes and convergence records; published aggregate results and a plotting script. The expanded suite now has 141 passing tests on my Mac, including saved-run verification, calibration and visualization checks.
 
 ## Why this comparison
 
@@ -149,13 +149,81 @@ after the publication checks. Models, predictions and prepared data remain
 outside Git. January and February were historical research periods, while the
 March–April holdout remains unscored.
 
+## Chronological nonlinear benchmark: XGBoost
+
+I added XGBoost as a controlled nonlinear comparison rather than replacing
+my verified logistic regression baseline. I retained the same 13 source
+predictors and review budgets, while allowing boosted trees to model
+nonlinear relationships and feature interactions.
+
+I fitted three predefined XGBoost configurations on October–November 2025.
+December average precision selected depth 3 with 240 boosting rounds
+(AP 0.890792). The next-best candidate had AP 0.887980. These are
+development results, not evidence that the selected configuration is
+universally better.
+
+In January, with both model families fitted on October–November, the
+uncalibrated logistic and XGBoost models each caught 271 of 281 positive
+labels at 1% reviews. Their average precision values were 0.926641 and
+0.927030, respectively.
+
+For February, I compared a newly fitted October–December XGBoost model,
+calibrated on January where appropriate, with the verified logistic
+Stage-B comparison using the same fitting period. At identical review
+budgets, the uncalibrated results were:
+
+| February review budget | Logistic positives caught | XGBoost positives caught |
+| --- | ---: | ---: |
+| 0.1% (168 reviews) | 165 | 168 |
+| 0.5% (840 reviews) | 194 | 197 |
+| 1.0% (1,680 reviews) | 197 | 198 |
+
+There were 202 positive labels in February. At the 1% budget, XGBoost
+caught one more positive, but its 1,680 reviews still included 1,482
+negative-labelled transactions. Uncalibrated average precision was
+0.941444 for logistic regression and 0.947867 for XGBoost; log loss
+was 0.001086 and 0.000888, respectively.
+
+I also tested sigmoid and isotonic probability calibration for XGBoost.
+Isotonic produced the lowest observed February XGBoost log loss
+(0.000805), but its average precision (0.935069) was below the
+uncalibrated model (0.947867). I did not select a final calibration
+method by looking at February.
+
+![XGBoost and logistic review-budget comparison](results/figures/xgboost_benchmark_v1/xgb_february_review_budget_differences.png)
+
+![Probability loss and Brier comparison](results/figures/xgboost_benchmark_v1/xgb_february_loss_and_brier_comparison.png)
+
+The XGBoost model's grouped feature-importance analysis assigned
+66.64% of the summed normalized average-split-gain values to category
+and 17.41% to transaction type. These numbers are not causal
+contributions or shares of total model gain. They motivate a
+chronological feature-ablation experiment rather than proving leakage.
+
+![Grouped XGBoost importance with metric limitations](results/figures/xgboost_benchmark_v1/xgb_grouped_gain_with_metric_caveat.png)
+
+The [complete XGBoost results and mathematical interpretation](docs/xgboost_first_aggregate_results.md),
+[chronological protocol](docs/xgboost_chronological_protocol.md),
+[reproducibility instructions](docs/xgboost_run_instructions.md), and
+[aggregate visualization audit](docs/xgboost_aggregate_review_install.md)
+describe the algorithms, equations, verification, references and limits.
+The [December comparison](results/figures/xgboost_benchmark_v1/xgb_december_candidate_comparison.png)
+and [shared-cohort reliability figure](results/figures/xgboost_benchmark_v1/xgb_february_shared_cohort_split_scale.png)
+provide additional diagnostics.
+
+My local XGBoost and aggregate-review verification expanded the test
+suite to 141 passing tests. February had already been explored in earlier
+work and is not an untouched final test. No statistical superiority or
+production performance is established. The March–April holdout remains
+unscored, and fitted models and transaction-level predictions stay local.
+
 ## Limits and next questions
 
 The data are fully synthetic. Strong scores may reflect how the dataset was generated; they do not establish performance on real payments. In particular, transaction type and category showed unusually strong label patterns. The completed [feature-removal comparison](docs/feature_ablation_results.md) showed substantial dependence on category: at 1,680 reviews, the log model caught 196 positives with all features, 193 without type, 130 without category and 113 without both. Amount ranking caught 109. This is dependence in a synthetic-data validation experiment, not proof of leakage. Device and location features also rely on an explicit assumption that they are available before authorization.
 
 The original ranking evaluation uses an entire February batch retrospectively; it does not implement a live threshold or measure financial savings. My later historical calibration experiment compares probability reliability, but does not establish production-ready calibrated probabilities. The three review budgets were experiment choices, not measured business capacity. A new read-only local audit has checked artifact hashes, fitted-model predictions and reported counts for both saved experiments. This was verified on my machine, not by an external reproduction using independently acquired data. Earlier Housing score reconstructions remain illustrative individual checks.
 
-I examined training category patterns and validation errors, then reconstructed two Housing scores around the review cutoff. I subsequently examined hypothetical review costs, cost-ratio sensitivity, fraud-labelled transaction-value capture and six missed positives. I have since reconstructed individual fitted contributions for the six misses. The calibration study is complete; wider temporal robustness checks, uncertainty quantification, a capacity-aware policy and the final holdout evaluation remain future work. A dashboard is optional, not part of this completed milestone.
+I examined training category patterns and validation errors, then reconstructed two Housing scores around the review cutoff. I subsequently examined hypothetical review costs, cost-ratio sensitivity, fraud-labelled transaction-value capture and six missed positives. I have since reconstructed individual fitted contributions for the six misses. The logistic calibration study and initial XGBoost benchmark are complete; paired model-disagreement analysis, temporal robustness, category/type ablations, uncertainty quantification, a capacity-aware policy and final holdout evaluation remain future work. A dashboard is optional, not part of this completed milestone.
 
 ## Reproduce or inspect
 
