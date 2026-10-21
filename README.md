@@ -1,8 +1,19 @@
-# PaymentGuard
+# Payment Guard — Synthetic Fraud-Review Ranking Research
 
-I am studying how to rank payment transactions for fraud review when only a small share can be checked. I started with data validation and SQL exploration, then compared two logistic regression baselines with simple reference rankings.
+**Completed Python / SQL / machine-learning research project.** I investigated how to prioritize fraud-labelled digital-payment transactions when only a fixed fraction can be reviewed. The work uses **synthetic AMLNet v2**, and includes validation of **1,090,000 records**, SQLite/SQL exploration, logistic regression, XGBoost, chronological experiments, probability calibration, feature-ablation checks and one frozen final holdout comparison.
 
-**Current milestone: I completed one frozen March–April 2026 holdout comparison of XGBoost and logistic regression, then published the verified aggregates, sensitivity analysis and paired-disagreement results.** This is an independent portfolio research project using synthetic AMLNet v2 data. It is not a deployed fraud-detection service or affiliated with a commercial product of the same name.
+The completed final study evaluated **253,190** March–April 2026 synthetic transactions. At the **predeclared 1% review budget**, XGBoost captured **267** of **278** positive labels against **254** for logistic regression (**+13** paired difference). That is **recall at a retrospective review capacity, not accuracy or production banking performance**. The entire local test suite passed **186 tests**, and the committed aggregate results passed a checksum/arithmetic audit.
+
+This is an independent **research portfolio project**, not a deployed service, validated bank fraud model or product affiliated with another service named Payment Guard. Source-data fields such as `category` and `type` have **unverified real-world decision-time availability**.
+
+## Start here
+
+- **[What I can and cannot claim](docs/what_this_project_can_and_cannot_claim.md)** — concise recruiter/technical-reviewer guide and interview explanation.
+- **[Final holdout research report](docs/final_holdout_first_results.md)** — primary and secondary findings, disagreements, calibration and limitations.
+- **[Frozen protocol](docs/final_holdout_frozen_protocol.md)** — exact evaluation plan committed before final model scoring.
+- **[Published results](results/tables/final_holdout_v1/)** and **[figures](results/figures/final_holdout_v1/)** — only aggregated counts and visualizations; no private predictions.
+- **[Logistic baseline](src/payment_guard/train_logistic_baseline.py)**, **[XGBoost experiment](src/payment_guard/xgboost_chronological.py)**, **[feature sensitivity](src/payment_guard/xgboost_feature_ablation.py)** and **[frozen holdout evaluator](scripts/evaluate_frozen_holdout.py)** — implementation.
+- **[Public results auditor](scripts/audit_final_holdout_public.py)**, **[tests](tests/)** and **[environment](environment.yml)** — code checks and reproducibility boundaries.
 
 ## What this project demonstrates — and what it does not
 
@@ -13,6 +24,21 @@ I am studying how to rank payment transactions for fraud review when only a smal
 **What I cannot say:** That XGBoost always wins (logistic caught **225 vs 222** at **0.1%** reviews); that **96.04% synthetic holdout recall** is real-bank fraud detection performance; that important `category` and `type` fields are genuinely available at decision time; or that this is a statistically established, financially validated, production-ready system.
 
 For a concise explanation of **the evidence, limits, feature assumptions, reproducibility boundary and interview-ready framing**, see **[What I can and cannot claim about Payment Guard](docs/what_this_project_can_and_cannot_claim.md)**. The [full final report](docs/final_holdout_first_results.md) documents every predeclared comparison and the less favourable results too.
+
+## Python and quantitative skills demonstrated
+
+| Area | Evidence in this repository |
+| --- | --- |
+| **Python: pandas and NumPy** | Transaction processing, transformation, score arrays, fixed-capacity ranking and validation checks in the modelling/evaluation modules. |
+| **SQL and SQLite** | Data-quality queries, split checks, amount-band/transaction-type exploration in [`sql/`](sql/) and the [SQL analysis](docs/training_sql_exploration.md). |
+| **scikit-learn** | Preprocessing pipelines, one-hot encoding, scaling, regularized logistic regression, AP, precision/recall, Brier score and log loss. |
+| **XGBoost** | Boosted-tree candidate comparisons, chronological fitting and score/feature-sensitivity analysis. |
+| **Experimental design** | Time-ordered development, previously frozen holdout endpoint, equal review budgets, paired model comparison and no test-set model selection. |
+| **Calibration and diagnostics** | Sigmoid/isotonic comparisons, fixed-cohort reliability checks, category/type ablations and model disagreement analysis. |
+| **Software engineering** | Modular Python, CLI scripts, `pytest` tests (**186 passed locally**), Git, saved-artifact verification, SHA-256 lineage checks and reviewable results. |
+| **Visual communication** | [Matplotlib and aggregate charts](results/figures/) showing workload, ranking performance, model disagreements and limitations. |
+
+These are **skills evidenced by the code and experiments**, not claims of production MLOps, cloud deployment, real-bank data experience or statistical generalization. This project uses experiments to explain *when model choice, review capacity and feature availability change the conclusion*.
 
 ## Frozen final holdout (March–April 2026)
 
@@ -77,7 +103,9 @@ provides the wider breakdown.
 - **Leakage review:** examined nested metadata and excluded supplied risk scores, duplicate targets, post-transaction balances and annotations that reveal the target.
 - **SQLite and SQL analysis:** checked the imported table against every prepared value, then explored training-period amounts, transaction types, transfers and monthly fraud rates.
 - **Baseline experiment:** compared raw and log-transformed amounts using the same logistic model settings, plus constant-prevalence and amount-ranking references.
-- **Reproducible evaluation:** saved local model artifacts, predictions, dependency versions, hashes and convergence records; published aggregate results and a plotting script. At that checkpoint, the expanded suite had 141 passing tests on my Mac. The frozen evaluation checkpoint passed 184 tests; after adding the public audit tests, the complete suite passed **186 tests locally on 21 October 2026**.
+- **Reproducible evaluation:** saved local model artifacts, predictions, dependency versions, hashes and convergence records; published aggregate-only counts and visualization scripts, verified checksums, and passed **186 tests locally on 21 October 2026**.
+- **Chronological model research:** compared logistic regression and XGBoost, studied sigmoid/isotonic probability calibration, category/type feature removals and fixed-workload paired disagreements.
+- **Frozen final assessment:** evaluated the precommitted March–April 2026 review-budget comparison once and documented both its positive result and the smaller-budget reversal.
 
 ## Why this comparison
 
@@ -270,7 +298,7 @@ PYTHONPATH=src python -m payment_guard.plot_logistic_baseline
 
 For a full training run, follow the [dataset source and download instructions](data/raw/amlnet_v2/README.md), [preparation account](docs/data_preparation.md) and [baseline run instructions](docs/running_logistic_baseline.md). The raw CSV is about 729 MiB; raw data, prepared tables, SQLite databases and model artifacts are excluded from Git. The dataset documentation records its source, checksums and CC BY-NC 4.0 license.
 
-The baseline and ablation runs completed on my Mac; 94 tests passed at the earlier verification checkpoint, and the expanded suite now passes 124 tests after calibration. Run-specific package versions are recorded in the results account and local manifest. `environment.yml` defines the working environment but is not an exact dependency lockfile.
+The baseline and ablation runs completed on my Mac; 94 tests passed at the earlier verification checkpoint, and 124 tests passed at the separate earlier calibration checkpoint; the final research test suite passed 186 tests locally. Run-specific package versions are recorded in the results account and local manifest. `environment.yml` defines the working environment but is not an exact dependency lockfile.
 
 To regenerate the two explanatory figures from recorded aggregate values
 (no raw dataset or fitted model is needed):
@@ -314,10 +342,12 @@ PYTHONPATH=src python scripts/plot_missed_fraud_v2.py
 | Six missed positives and visuals | [Contribution study](docs/missed_fraud_contribution_study.md) · [Figure interpretation](docs/missed_fraud_visualization_revision.md) |
 | Probability calibration and temporal validation | [Chronological protocol](docs/calibration_temporal_protocol.md) · [Results and charts](docs/calibration_first_results.md) · [Saved-run verification](docs/calibration_saved_run_verification.md) |
 | Recruiter overview: demonstrated results and limits | [What I can and cannot claim](docs/what_this_project_can_and_cannot_claim.md) |
+| Completed frozen holdout evidence | [Final research report](docs/final_holdout_first_results.md) · [Final aggregate tables](results/tables/final_holdout_v1/) · [Figures](results/figures/final_holdout_v1/) |
+| Python and ML skills | [Logistic code](src/payment_guard/train_logistic_baseline.py) · [XGBoost code](src/payment_guard/xgboost_chronological.py) · [Final evaluator](scripts/evaluate_frozen_holdout.py) |
 | Development history | [Project journal](docs/project_journal.md) |
 
-My broader question is how to connect fraud scores with approve, review and block decisions while accounting for missed fraud, customer inconvenience and review effort. This checkpoint provides the first measured ranking comparison for that work.
+My broader question is how to connect fraud scores with approve, review and block decisions while accounting for missed fraud, customer inconvenience and review effort. The final research evaluation and its documented limitations are complete; turning ranking scores into real payment decisions would require separate operational and financial validation.
 
 ## Review-budget and cost follow-up
 
-I have added a [mathematical formulation and review-budget methodology](docs/review_budget_methodology.md) and a [cost, transaction-value and missed-case research account](docs/review_cost_followup.md). Four reproducible analysis scripts under `scripts/analyze_*.py` examine hypothetical review costs, sensitivity to cost ratios, fraud-labelled transaction-value capture and the missed positive labels. These are **exploratory validation diagnostics**, not a live policy or demonstrated savings. The row-level scripts require local Parquet data and saved model predictions that are intentionally not committed. A separate validation amount-band percentage calculation was corrected after detecting integer overflow in an `int8` grouped count; the verified rates and calculation are documented in the follow-up account. At that earlier checkpoint, 72 tests passed locally; the current suite has 124 passing tests after the separate calibration checkpoint. Row-level data and artifacts remain local, so this is not an external full-data rerun.
+I have added a [mathematical formulation and review-budget methodology](docs/review_budget_methodology.md) and a [cost, transaction-value and missed-case research account](docs/review_cost_followup.md). Four reproducible analysis scripts under `scripts/analyze_*.py` examine hypothetical review costs, sensitivity to cost ratios, fraud-labelled transaction-value capture and the missed positive labels. These are **exploratory validation diagnostics**, not a live policy or demonstrated savings. The row-level scripts require local Parquet data and saved model predictions that are intentionally not committed. A separate validation amount-band percentage calculation was corrected after detecting integer overflow in an `int8` grouped count; the verified rates and calculation are documented in the follow-up account. At that earlier checkpoint, 72 tests passed locally; 124 tests passed at that earlier calibration checkpoint; the final suite passed 186 tests locally. Row-level data and artifacts remain local, so this is not an external full-data rerun.
