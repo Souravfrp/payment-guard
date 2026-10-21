@@ -1,0 +1,10 @@
+period,review_fraction,selected_each_model,both_caught,only_xgboost,only_logistic,neither_caught,xgboost_caught,logistic_caught,primary_delta_caught,shared_reviewed_transactions,unique_reviews_per_model
+Pooled,0.001,254,217,5,8,48,222,225,-3,237,17
+Pooled,0.005,1266,251,13,1,13,264,252,12,739,527
+Pooled,0.01,2532,252,15,2,9,267,254,13,1210,1322
+March,0.001,187,164,8,7,45,172,171,1,170,17
+March,0.005,931,199,12,1,12,211,200,11,554,377
+March,0.01,1861,201,12,2,9,213,203,10,923,938
+April,0.001,68,47,0,2,5,47,49,-2,59,9
+April,0.005,336,52,1,0,1,53,52,1,191,145
+April,0.01,672,52,2,0,0,54,52,2,299,373

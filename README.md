@@ -2,9 +2,38 @@
 
 I am studying how to rank payment transactions for fraud review when only a small share can be checked. I started with data validation and SQL exploration, then compared two logistic regression baselines with simple reference rankings.
 
-**Current milestone: I verified my logistic baseline and feature-ablation results, investigated six missed positive labels, and completed a forward-only probability-calibration study with saved-run verification and revised reliability figures.** This is an independent portfolio research project using synthetic AMLNet v2 data. It is not a deployed fraud-detection service or affiliated with a commercial product of the same name.
+**Current milestone: I completed one frozen March–April 2026 holdout comparison of XGBoost and logistic regression, then published the verified aggregates, sensitivity analysis and paired-disagreement results.** This is an independent portfolio research project using synthetic AMLNet v2 data. It is not a deployed fraud-detection service or affiliated with a commercial product of the same name.
 
-## First result
+## What this project demonstrates — and what it does not
+
+**My question:** If only a small fraction of transactions can be reviewed, can a carefully evaluated ranking model prioritize more fraud-labelled cases? I examined that question with synthetic AMLNet v2 data, starting with SQL/data validation and progressing from logistic regression to XGBoost, chronological model comparisons, calibration diagnostics and feature-removal experiments.
+
+**What I can say:** Under my frozen **1% March–April review budget**, XGBoost captured **267 of 278** positive-labelled transactions versus **254** for logistic regression, using the same **2,532 review slots**. The saved results and public aggregate arithmetic were verified, and **186 tests passed locally** on 21 October 2026.
+
+**What I cannot say:** That XGBoost always wins (logistic caught **225 vs 222** at **0.1%** reviews); that **96.04% synthetic holdout recall** is real-bank fraud detection performance; that important `category` and `type` fields are genuinely available at decision time; or that this is a statistically established, financially validated, production-ready system.
+
+For a concise explanation of **the evidence, limits, feature assumptions, reproducibility boundary and interview-ready framing**, see **[What I can and cannot claim about Payment Guard](docs/what_this_project_can_and_cannot_claim.md)**. The [full final report](docs/final_holdout_first_results.md) documents every predeclared comparison and the less favourable results too.
+
+## Frozen final holdout (March–April 2026)
+
+The primary model and **1% review budget** were fixed in a written protocol **before scoring**. I compared the saved full-feature, uncalibrated XGBoost and logistic models on **253,190 synthetic transactions** containing **278 positive labels**, using **2,532 reviews per model**.
+
+| Primary pooled result (1% capacity) | XGBoost | Logistic |
+| --- | ---: | ---: |
+| Positive labels captured | **267** | 254 |
+| Recall | **96.04%** | 91.37% |
+| Precision among reviews | **10.55%** | 10.03% |
+| Average precision (whole ranking) | **0.8934** | 0.8686 |
+
+The **+13** positive-label advantage for XGBoost is the outcome of the frozen primary comparison. It is **not** an accuracy figure, proof of statistical superiority, or evidence of real-world deployment suitability. At the smaller **0.1%** review capacity logistic catches **225** positives versus XGBoost's **222**. At 1%, both catch **252 of the same positive labels**, but their full review lists share only **1,210 of 2,532 rows**.
+
+![Fraud-label capture at three fixed review capacities](results/figures/final_holdout_v1/pooled_capture_budgets.svg)
+
+**Feature dependence is a major limitation:** without `category`, XGBoost catches **169** positive labels at 1%; without both `category` and `type`, it catches **141**. Those synthetic fields have **unverified decision-time provenance in real applications**, and the AP measure favours logistic regression within the two reduced-feature variants.
+
+The complete [final research interpretation](docs/final_holdout_first_results.md) includes monthly breakdowns, the conflicting smallest-budget result, probability calibration diagnostics, and all limitations. The [frozen protocol](docs/final_holdout_frozen_protocol.md), [first-run instructions](docs/final_holdout_execution.md), [42 audited metric records](results/tables/final_holdout_v1/metrics.csv), [9 paired comparisons](results/tables/final_holdout_v1/paired_overlap.csv) and [public arithmetic/checksum verifier](scripts/audit_final_holdout_public.py) document what was actually tested. The original fitted models, holdout scores and transaction records remain **local and excluded from Git**. The first completed run passed a read-only hash/metric audit. An earlier command loaded but did not score the holdout due to a Python import-path error; I documented that interruption instead of calling these rows wholly unseen.
+
+## Earlier February baseline result
 
 I trained on 668,820 earlier transactions and evaluated on 167,990 transactions from February 2026, including 202 positive labels. At the predeclared 1% review budget, each approach flagged exactly 1,680 transactions.
 
@@ -48,7 +77,7 @@ provides the wider breakdown.
 - **Leakage review:** examined nested metadata and excluded supplied risk scores, duplicate targets, post-transaction balances and annotations that reveal the target.
 - **SQLite and SQL analysis:** checked the imported table against every prepared value, then explored training-period amounts, transaction types, transfers and monthly fraud rates.
 - **Baseline experiment:** compared raw and log-transformed amounts using the same logistic model settings, plus constant-prevalence and amount-ranking references.
-- **Reproducible evaluation:** saved local model artifacts, predictions, dependency versions, hashes and convergence records; published aggregate results and a plotting script. The expanded suite now has 124 passing tests on my Mac, including saved-run verification, calibration and visualization checks.
+- **Reproducible evaluation:** saved local model artifacts, predictions, dependency versions, hashes and convergence records; published aggregate results and a plotting script. At that checkpoint, the expanded suite had 141 passing tests on my Mac. The frozen evaluation checkpoint passed 184 tests; after adding the public audit tests, the complete suite passed **186 tests locally on 21 October 2026**.
 
 ## Why this comparison
 
@@ -60,9 +89,9 @@ Both fits use L2 regularization and the same 13 source predictors. Scaling and c
 | --- | ---: | ---: | --- |
 | Before February 2026 | 668,820 | 931 | Fit preprocessing and models |
 | February 2026 | 167,990 | 202 | Compare baseline rankings |
-| March 2026 onward | 253,190 | 278 | Reserved for later model evaluation |
+| March–April 2026 | 253,190 | 278 | Final out-of-time holdout; scored once under frozen protocol |
 
-The present training command reads and scores only training/validation periods. Earlier exploratory auditing did examine the full dataset, so I describe the final period as a chronological holdout after auditing, not an entirely unseen dataset.
+The historical training commands read and score only training/validation periods. The separate frozen final evaluation has now scored March–April once. Earlier exploratory auditing did examine the full dataset, so this is a chronological holdout after auditing, not an entirely unseen dataset.
 
 ## Saved-run verification and six missed cases
 
@@ -86,7 +115,7 @@ measured financial loss**. I reconstructed fitted logistic log-odds for these
 six cases and compared them with detected positives having the same transaction
 type and category. The six comparisons reused **two distinct detected cases**,
 so they describe individual predictions rather than a representative or
-causal sample. The final March–April holdout was not scored.
+causal sample. At that earlier validation checkpoint, the March–April holdout had not been scored; its later frozen result is documented above.
 
 ![Six missed labels and their matched detected examples, with the review cutoff](results/figures/missed_fraud_score_comparison_v2.png)
 
@@ -146,8 +175,74 @@ provide the complementary interpretation. The complete
 explain the equations, controls and limitations. The local v2 audit reloaded
 six fitted objects and reconstructed their results; **124 tests passed locally**
 after the publication checks. Models, predictions and prepared data remain
-outside Git. January and February were historical research periods, while the
-March–April holdout remains unscored.
+outside Git. January and February were historical research periods; the separate March–April holdout was subsequently scored once under the committed freeze.
+
+## Chronological nonlinear benchmark: XGBoost
+
+I added XGBoost as a controlled nonlinear comparison rather than replacing
+my verified logistic regression baseline. I retained the same 13 source
+predictors and review budgets, while allowing boosted trees to model
+nonlinear relationships and feature interactions.
+
+I fitted three predefined XGBoost configurations on October–November 2025.
+December average precision selected depth 3 with 240 boosting rounds
+(AP 0.890792). The next-best candidate had AP 0.887980. These are
+development results, not evidence that the selected configuration is
+universally better.
+
+In January, with both model families fitted on October–November, the
+uncalibrated logistic and XGBoost models each caught 271 of 281 positive
+labels at 1% reviews. Their average precision values were 0.926641 and
+0.927030, respectively.
+
+For February, I compared a newly fitted October–December XGBoost model,
+calibrated on January where appropriate, with the verified logistic
+Stage-B comparison using the same fitting period. At identical review
+budgets, the uncalibrated results were:
+
+| February review budget | Logistic positives caught | XGBoost positives caught |
+| --- | ---: | ---: |
+| 0.1% (168 reviews) | 165 | 168 |
+| 0.5% (840 reviews) | 194 | 197 |
+| 1.0% (1,680 reviews) | 197 | 198 |
+
+There were 202 positive labels in February. At the 1% budget, XGBoost
+caught one more positive, but its 1,680 reviews still included 1,482
+negative-labelled transactions. Uncalibrated average precision was
+0.941444 for logistic regression and 0.947867 for XGBoost; log loss
+was 0.001086 and 0.000888, respectively.
+
+I also tested sigmoid and isotonic probability calibration for XGBoost.
+Isotonic produced the lowest observed February XGBoost log loss
+(0.000805), but its average precision (0.935069) was below the
+uncalibrated model (0.947867). I did not select a final calibration
+method by looking at February.
+
+![XGBoost and logistic review-budget comparison](results/figures/xgboost_benchmark_v1/xgb_february_review_budget_differences.png)
+
+![Probability loss and Brier comparison](results/figures/xgboost_benchmark_v1/xgb_february_loss_and_brier_comparison.png)
+
+The XGBoost model's grouped feature-importance analysis assigned
+66.64% of the summed normalized average-split-gain values to category
+and 17.41% to transaction type. These numbers are not causal
+contributions or shares of total model gain. They motivate a
+chronological feature-ablation experiment rather than proving leakage.
+
+![Grouped XGBoost importance with metric limitations](results/figures/xgboost_benchmark_v1/xgb_grouped_gain_with_metric_caveat.png)
+
+The [complete XGBoost results and mathematical interpretation](docs/xgboost_first_aggregate_results.md),
+[chronological protocol](docs/xgboost_chronological_protocol.md),
+[reproducibility instructions](docs/xgboost_run_instructions.md), and
+[aggregate visualization audit](docs/xgboost_aggregate_review_install.md)
+describe the algorithms, equations, verification, references and limits.
+The [December comparison](results/figures/xgboost_benchmark_v1/xgb_december_candidate_comparison.png)
+and [shared-cohort reliability figure](results/figures/xgboost_benchmark_v1/xgb_february_shared_cohort_split_scale.png)
+provide additional diagnostics.
+
+My local XGBoost and aggregate-review verification expanded the test
+suite to 141 passing tests. February had already been explored in earlier
+work and is not an untouched final test. No statistical superiority or
+production performance is established by the February benchmark. The later frozen March–April evaluation is reported at the top of this README; fitted models and transaction-level predictions stay local.
 
 ## Limits and next questions
 
@@ -155,7 +250,7 @@ The data are fully synthetic. Strong scores may reflect how the dataset was gene
 
 The original ranking evaluation uses an entire February batch retrospectively; it does not implement a live threshold or measure financial savings. My later historical calibration experiment compares probability reliability, but does not establish production-ready calibrated probabilities. The three review budgets were experiment choices, not measured business capacity. A new read-only local audit has checked artifact hashes, fitted-model predictions and reported counts for both saved experiments. This was verified on my machine, not by an external reproduction using independently acquired data. Earlier Housing score reconstructions remain illustrative individual checks.
 
-I examined training category patterns and validation errors, then reconstructed two Housing scores around the review cutoff. I subsequently examined hypothetical review costs, cost-ratio sensitivity, fraud-labelled transaction-value capture and six missed positives. I have since reconstructed individual fitted contributions for the six misses. The calibration study is complete; wider temporal robustness checks, uncertainty quantification, a capacity-aware policy and the final holdout evaluation remain future work. A dashboard is optional, not part of this completed milestone.
+I examined training category patterns and validation errors, then reconstructed two Housing scores around the review cutoff. I subsequently examined hypothetical review costs, cost-ratio sensitivity, fraud-labelled transaction-value capture and six missed positives. I have since reconstructed individual fitted contributions for the six misses. The logistic calibration study, XGBoost benchmark, paired model-disagreement analysis, category/type ablations and single frozen final holdout evaluation are complete. Formal statistical uncertainty quantification, real-world source-feature provenance verification and a measured capacity-aware policy remain future work. A dashboard is optional, not part of this completed milestone.
 
 ## Reproduce or inspect
 
@@ -218,6 +313,7 @@ PYTHONPATH=src python scripts/plot_missed_fraud_v2.py
 | Saved-run reproducibility | [Verification account](docs/verification_checkpoint.md) · [Verifier](src/payment_guard/verify_checkpoint.py) |
 | Six missed positives and visuals | [Contribution study](docs/missed_fraud_contribution_study.md) · [Figure interpretation](docs/missed_fraud_visualization_revision.md) |
 | Probability calibration and temporal validation | [Chronological protocol](docs/calibration_temporal_protocol.md) · [Results and charts](docs/calibration_first_results.md) · [Saved-run verification](docs/calibration_saved_run_verification.md) |
+| Recruiter overview: demonstrated results and limits | [What I can and cannot claim](docs/what_this_project_can_and_cannot_claim.md) |
 | Development history | [Project journal](docs/project_journal.md) |
 
 My broader question is how to connect fraud scores with approve, review and block decisions while accounting for missed fraud, customer inconvenience and review effort. This checkpoint provides the first measured ranking comparison for that work.

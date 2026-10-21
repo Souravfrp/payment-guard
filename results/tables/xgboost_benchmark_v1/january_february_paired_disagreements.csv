@@ -1,0 +1,7 @@
+month,review_fraction,review_budget_percent,transactions,fraud_labels,selected_each_model,both_caught,only_logistic,only_xgboost,neither_caught,logistic_caught,xgboost_caught,xgboost_minus_logistic,both_selected_all_labels,selected_only_logistic_all_labels,selected_only_xgboost_all_labels,logistic_false_positives,xgboost_false_positives
+January,0.001,0.1,186097,281,187,173,14,14,80,187,187,0,173,14,14,0,0
+January,0.005,0.5,186097,281,931,265,1,2,13,266,267,1,646,285,285,665,664
+January,0.01,1.0,186097,281,1861,268,3,3,7,271,271,0,1043,818,818,1590,1590
+February,0.001,0.1,167990,202,168,160,5,8,29,165,168,3,160,8,8,3,0
+February,0.005,0.5,167990,202,840,194,0,3,5,194,197,3,525,315,315,646,643
+February,0.01,1.0,167990,202,1680,196,1,2,3,197,198,1,828,852,852,1483,1482

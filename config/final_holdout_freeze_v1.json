@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "state": "PROTOCOL_FROZEN__MODEL_HASH_PREFLIGHT_PENDING",
+  "freeze_date": "2026-10-21",
+  "protocol_path": "docs/final_holdout_frozen_protocol.md",
+  "source_snapshot_commit": "84dd8c114e57c6b58876a8d03c41bea5fe9591c4",
+  "pinned_source_git_blobs": {
+    "src/payment_guard/train_logistic_baseline.py": "787ccf985a63c025c22b1ff17aeeea416e4c4fd0",
+    "src/payment_guard/xgboost_chronological.py": "443df96d3b25073c7921c736c1074c8bf9cebd50",
+    "src/payment_guard/xgboost_feature_ablation.py": "f656360de07dd3c87104c6a79dd97e527b6fcb41",
+    "src/payment_guard/calibration_saved_v2.py": "f784284489f2b9dfb50de4112d1ab219b7b8bcce",
+    "src/payment_guard/calibration_temporal.py": "66f9040767bc8372d3887deabac1ff6f10b42b20"
+  },
+  "data": {
+    "prepared_parquet": "data/processed/amlnet_v2_prepared.parquet",
+    "holdout_split": "test",
+    "holdout_start_inclusive": "2026-03-01T00:00:00",
+    "holdout_end_exclusive": "2026-05-01T00:00:00",
+    "expected_holdout_rows": 253190,
+    "sort_keys": [
+      "timestamp",
+      "source_row"
+    ],
+    "development_fit_period": "2025-10 through 2025-12",
+    "march_april_scored": false
+  },
+  "source_features": [
+    "amount",
+    "oldbalanceOrg",
+    "hour",
+    "day_of_week",
+    "day_of_month",
+    "month",
+    "type",
+    "category",
+    "metadata.payment_method",
+    "metadata.device_info.os",
+    "metadata.device_info.type",
+    "metadata.location.city",
+    "metadata.location.state"
+  ],
+  "primary": {
+    "family": "xgboost",
+    "variant": "full",
+    "score": "uncalibrated",
+    "local_artifact": "models/xgboost_benchmark_v1/B_xgboost.joblib",
+    "fit_period": "2025-10 through 2025-12",
+    "xgboost_configuration": "depth3_240"
+  },
+  "comparator": {
+    "family": "logistic",
+    "variant": "full",
+    "score": "uncalibrated",
+    "local_artifact": "models/calibration_saved_v2/B_base.joblib",
+    "fit_period": "2025-10 through 2025-12"
+  },
+  "fixed_sensitivity_artifacts": [
+    {
+      "family": "xgboost",
+      "variant": "without_category",
+      "local_artifact": "models/xgboost_ablation_v1/february_xgboost_without_category.joblib"
+    },
+    {
+      "family": "logistic",
+      "variant": "without_category",
+      "local_artifact": "models/xgboost_ablation_v1/february_logistic_without_category.joblib"
+    },
+    {
+      "family": "xgboost",
+      "variant": "without_both",
+      "local_artifact": "models/xgboost_ablation_v1/february_xgboost_without_both.joblib"
+    },
+    {
+      "family": "logistic",
+      "variant": "without_both",
+      "local_artifact": "models/xgboost_ablation_v1/february_logistic_without_both.joblib"
+    }
+  ],
+  "secondary_calibration_artifacts": [
+    "models/xgboost_benchmark_v1/B_xgboost_sigmoid.joblib",
+    "models/xgboost_benchmark_v1/B_xgboost_isotonic.joblib",
+    "models/calibration_saved_v2/B_sigmoid.joblib",
+    "models/calibration_saved_v2/B_isotonic.joblib"
+  ],
+  "ranking": {
+    "primary_budget_fraction": 0.01,
+    "secondary_budget_fractions": [
+      0.001,
+      0.005
+    ],
+    "budget_rounding": "ceil(N * fraction)",
+    "tie_breaking": "np.lexsort((np.random.default_rng(20261005).permutation(N), -scores))",
+    "tie_seed": 20261005,
+    "primary_metric": "paired_XGBoost_minus_logistic_true_positives_at_one_percent_pooled_holdout",
+    "secondary_metrics": [
+      "tp",
+      "fp",
+      "fn",
+      "tn",
+      "precision",
+      "recall",
+      "average_precision",
+      "log_loss",
+      "brier_score",
+      "paired_fraud_disagreements",
+      "all_review_queue_overlap",
+      "march_and_april_subgroup_results"
+    ]
+  },
+  "artifact_verification": {
+    "local_run_manifests": [
+      "models/calibration_saved_v2/run.json",
+      "models/xgboost_benchmark_v1/run.json",
+      "models/xgboost_ablation_v1/run.json"
+    ],
+    "verify_all_existing_run_artifact_hashes": true,
+    "require_matching_prepared_sha256": true,
+    "require_saved_manifest_cross_references": true,
+    "require_no_holdout_scoring_in_previous_runs": true,
+    "require_pre_score_local_fingerprint": true,
+    "public_model_sha256_values_available": false,
+    "source_of_truth": "prior locally generated trusted run manifests; fingerprint to be recorded before holdout evaluation"
+  },
+  "prohibitions": [
+    "no_training_on_holdout",
+    "no_calibration_fit_on_holdout",
+    "no_scoring_holdout_before_fingerprint_preflight",
+    "no_hyperparameter_or_feature_selection_using_holdout",
+    "no_horizon_or_budget_reselection_after_holdout",
+    "no_rewriting_or_overwriting_first_scored_run",
+    "no_model_retraining_or_preprocessing_fit_after_freeze"
+  ],
+  "notes": "Development scores are historical, March-April was previously included in full-file validation but remains unscored as a model evaluation. No inference about real-world payment deployments."
+}

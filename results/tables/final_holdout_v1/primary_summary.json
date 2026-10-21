@@ -1,0 +1,14 @@
+{
+  "scope": "March\u2013April 2026 pooled holdout",
+  "synthetic": true,
+  "primary_model": "xgboost_uncalibrated",
+  "comparator": "logistic_uncalibrated",
+  "review_fraction": 0.01,
+  "review_count_each_model": 2532,
+  "positive_labels": 278,
+  "xgboost_caught": 267,
+  "logistic_caught": 254,
+  "paired_xgboost_minus_logistic": 13,
+  "categorical_feature_assumption": "category and type provisionally treated as decision-time available; unverified in real deployment",
+  "interpretation": "Descriptive synthetic final holdout; no retuning or real-world operational claim"
+}

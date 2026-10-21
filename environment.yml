@@ -19,3 +19,6 @@ dependencies:
   - altair
   - plotly
   - streamlit
+  - pip
+  - pip:
+    - 'xgboost>=2.1,<4'
