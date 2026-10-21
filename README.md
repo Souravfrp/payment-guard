@@ -4,6 +4,16 @@ I am studying how to rank payment transactions for fraud review when only a smal
 
 **Current milestone: I completed one frozen March–April 2026 holdout comparison of XGBoost and logistic regression, then published the verified aggregates, sensitivity analysis and paired-disagreement results.** This is an independent portfolio research project using synthetic AMLNet v2 data. It is not a deployed fraud-detection service or affiliated with a commercial product of the same name.
 
+## What this project demonstrates — and what it does not
+
+**My question:** If only a small fraction of transactions can be reviewed, can a carefully evaluated ranking model prioritize more fraud-labelled cases? I examined that question with synthetic AMLNet v2 data, starting with SQL/data validation and progressing from logistic regression to XGBoost, chronological model comparisons, calibration diagnostics and feature-removal experiments.
+
+**What I can say:** Under my frozen **1% March–April review budget**, XGBoost captured **267 of 278** positive-labelled transactions versus **254** for logistic regression, using the same **2,532 review slots**. The saved results and public aggregate arithmetic were verified, and **186 tests passed locally** on 21 October 2026.
+
+**What I cannot say:** That XGBoost always wins (logistic caught **225 vs 222** at **0.1%** reviews); that **96.04% synthetic holdout recall** is real-bank fraud detection performance; that important `category` and `type` fields are genuinely available at decision time; or that this is a statistically established, financially validated, production-ready system.
+
+For a concise explanation of **the evidence, limits, feature assumptions, reproducibility boundary and interview-ready framing**, see **[What I can and cannot claim about Payment Guard](docs/what_this_project_can_and_cannot_claim.md)**. The [full final report](docs/final_holdout_first_results.md) documents every predeclared comparison and the less favourable results too.
+
 ## Frozen final holdout (March–April 2026)
 
 The primary model and **1% review budget** were fixed in a written protocol **before scoring**. I compared the saved full-feature, uncalibrated XGBoost and logistic models on **253,190 synthetic transactions** containing **278 positive labels**, using **2,532 reviews per model**.
@@ -67,7 +77,7 @@ provides the wider breakdown.
 - **Leakage review:** examined nested metadata and excluded supplied risk scores, duplicate targets, post-transaction balances and annotations that reveal the target.
 - **SQLite and SQL analysis:** checked the imported table against every prepared value, then explored training-period amounts, transaction types, transfers and monthly fraud rates.
 - **Baseline experiment:** compared raw and log-transformed amounts using the same logistic model settings, plus constant-prevalence and amount-ranking references.
-- **Reproducible evaluation:** saved local model artifacts, predictions, dependency versions, hashes and convergence records; published aggregate results and a plotting script. At that checkpoint, the expanded suite had 141 passing tests on my Mac. The later frozen evaluation checkpoint passed 184 tests; the public audit tests added after the run require a new local check.
+- **Reproducible evaluation:** saved local model artifacts, predictions, dependency versions, hashes and convergence records; published aggregate results and a plotting script. At that checkpoint, the expanded suite had 141 passing tests on my Mac. The frozen evaluation checkpoint passed 184 tests; after adding the public audit tests, the complete suite passed **186 tests locally on 21 October 2026**.
 
 ## Why this comparison
 
@@ -303,6 +313,7 @@ PYTHONPATH=src python scripts/plot_missed_fraud_v2.py
 | Saved-run reproducibility | [Verification account](docs/verification_checkpoint.md) · [Verifier](src/payment_guard/verify_checkpoint.py) |
 | Six missed positives and visuals | [Contribution study](docs/missed_fraud_contribution_study.md) · [Figure interpretation](docs/missed_fraud_visualization_revision.md) |
 | Probability calibration and temporal validation | [Chronological protocol](docs/calibration_temporal_protocol.md) · [Results and charts](docs/calibration_first_results.md) · [Saved-run verification](docs/calibration_saved_run_verification.md) |
+| Recruiter overview: demonstrated results and limits | [What I can and cannot claim](docs/what_this_project_can_and_cannot_claim.md) |
 | Development history | [Project journal](docs/project_journal.md) |
 
 My broader question is how to connect fraud scores with approve, review and block decisions while accounting for missed fraud, customer inconvenience and review effort. This checkpoint provides the first measured ranking comparison for that work.
