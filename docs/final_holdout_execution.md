@@ -28,7 +28,7 @@ fingerprint or dependency check fails, stop before scoring.
 The following command CONSUMES the March–April final holdout. Do not run it
 until the fixture tests, full project suite, and no-scoring preflight have passed:
 
-    python scripts/evaluate_frozen_holdout.py --score-frozen-holdout
+    PYTHONPATH=src python scripts/evaluate_frozen_holdout.py --score-frozen-holdout
 
 It refuses to score if the original private fingerprint is missing, different,
 or the immutable output already exists. Only test-split rows are loaded for
@@ -72,3 +72,21 @@ the unproven real-world decision-time provenance of category/type.
 The scorer and these instructions are committed **after the protocol freeze but
 before the first holdout score**. The scorer's exact source SHA-256 is included
 in the first local holdout-run manifest.
+
+## 5. Interrupted first holdout invocation (21 October 2026)
+
+The first explicit scoring invocation lacked `PYTHONPATH=src`. The frozen
+fingerprint passed and all 253,190 March–April holdout rows, including labels,
+were loaded and validated. The command then failed while importing
+`payment_guard.train_logistic_baseline` in `collect_model_scores` with a
+`ModuleNotFoundError`. This occurred **before any model was loaded for scoring,
+any model prediction was calculated, any performance metric was produced,
+or the final output directory was created**. The following read-only
+`--verify-only` command failed appropriately because there was no saved result.
+
+The corrective step is an environment-only command change:
+`PYTHONPATH=src python scripts/evaluate_frozen_holdout.py --score-frozen-holdout`.
+No trained model, input feature, calibration map, reporting metric, review
+budget, or selection rule was changed. This attempted read is documented
+rather than treating the holdout as entirely unseen. The corrected command
+will be the first **completed scored evaluation** if it succeeds.
